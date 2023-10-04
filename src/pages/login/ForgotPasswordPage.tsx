@@ -1,17 +1,17 @@
 import Button from '@/components/partials/buttons/Button';
 import TextInput from '@/components/partials/inputs/TextInput';
-import { HiPhone, HiKey } from 'react-icons/hi';
+import { HiPhone } from 'react-icons/hi';
 import { ChangeEvent, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
-import { login } from '@/redux/features/auth/auth.thunk';
+import { forgotPassword } from '@/redux/features/auth/auth.thunk';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { webAuthPaths } from '@/constants/path';
 
-const LoginPage = () => {
+const ForgotPasswordPage = () => {
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
     username: '',
-    password: '',
   });
   const { loading } = useAppSelector(state => state.auth);
   const dispatch = useAppDispatch();
@@ -28,13 +28,16 @@ const LoginPage = () => {
   ) => {
     e.preventDefault();
     try {
-      await dispatch(login(credentials)).unwrap();
-      toast.success('Login successful');
+      await dispatch(forgotPassword(credentials.username)).unwrap();
+      toast.success(
+        'Check your email or phone number for verification code to reset your password',
+      );
       setCredentials({
         username: '',
-        password: '',
       });
-      navigate('/dashboard', { replace: true });
+      navigate(webAuthPaths.resetPassword, {
+        state: { username: credentials.username },
+      });
     } catch (error) {
       const err = error as Error;
       toast.error(err.message);
@@ -50,26 +53,14 @@ const LoginPage = () => {
         onChange={onChange}
       />
 
-      <TextInput
-        leftIcon={<HiKey size={16} />}
-        className="mt-4"
-        placeholder="Password"
-        type="password"
-        name="password"
-        value={credentials.password}
-        onChange={onChange}
-      />
-
       <Button
         type="submit"
-        label="Login"
-        disabled={
-          loading || !credentials.username || !credentials.password
-        }
+        label="SUBMIT"
+        disabled={loading || !credentials.username}
         className="mt-8 w-full disabled:bg-opacity-60 disabled:cursor-not-allowed"
       />
     </form>
   );
 };
 
-export default LoginPage;
+export default ForgotPasswordPage;

@@ -1,16 +1,18 @@
 import Button from '@/components/partials/buttons/Button';
 import TextInput from '@/components/partials/inputs/TextInput';
-import { HiPhone, HiKey } from 'react-icons/hi';
+import { HiKey, HiCheckCircle } from 'react-icons/hi';
 import { ChangeEvent, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
-import { login } from '@/redux/features/auth/auth.thunk';
+import { resetPassword } from '@/redux/features/auth/auth.thunk';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-const LoginPage = () => {
+const ResetPasswordPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { username } = location.state as { username: string };
   const [credentials, setCredentials] = useState({
-    username: '',
+    verification_code: '',
     password: '',
   });
   const { loading } = useAppSelector(state => state.auth);
@@ -28,10 +30,12 @@ const LoginPage = () => {
   ) => {
     e.preventDefault();
     try {
-      await dispatch(login(credentials)).unwrap();
-      toast.success('Login successful');
+      await dispatch(
+        resetPassword({ ...credentials, username }),
+      ).unwrap();
+      toast.success('Password reset successful');
       setCredentials({
-        username: '',
+        verification_code: '',
         password: '',
       });
       navigate('/dashboard', { replace: true });
@@ -43,17 +47,17 @@ const LoginPage = () => {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col mt-10">
       <TextInput
-        leftIcon={<HiPhone size={16} />}
-        placeholder="Email or Phone Number"
-        name="username"
-        value={credentials.username}
+        leftIcon={<HiCheckCircle size={16} />}
+        placeholder="Enter verification code"
+        name="verification_code"
+        value={credentials.verification_code}
         onChange={onChange}
       />
 
       <TextInput
         leftIcon={<HiKey size={16} />}
         className="mt-4"
-        placeholder="Password"
+        placeholder="Enter new password"
         type="password"
         name="password"
         value={credentials.password}
@@ -62,14 +66,12 @@ const LoginPage = () => {
 
       <Button
         type="submit"
-        label="Login"
-        disabled={
-          loading || !credentials.username || !credentials.password
-        }
+        label="SUBMIT"
+        disabled={loading || !credentials.verification_code}
         className="mt-8 w-full disabled:bg-opacity-60 disabled:cursor-not-allowed"
       />
     </form>
   );
 };
 
-export default LoginPage;
+export default ResetPasswordPage;

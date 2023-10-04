@@ -13,6 +13,7 @@ export default {
       colors: {
         'blue-500': '#478CCA',
         'slate-600': '#3D576F',
+        'amber-400': '#F6BA15',
       },
       fontFamily: {
         sans: ['Inter', ...defaultTheme.fontFamily.sans],
