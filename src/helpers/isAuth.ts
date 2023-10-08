@@ -4,6 +4,8 @@ import Secure from './secureLS';
 import Http from '../config/http';
 import Keys from '../constants/keys';
 import { User } from '@/interfaces/user.type';
+import { redirect } from 'react-router-dom';
+import { webAuthPaths } from '@/constants/path';
 
 const isAuth = (token = Secure.getToken()) => {
   try {
@@ -57,4 +59,24 @@ export const logoutUser = async () => {
     Secure.removeToken();
     Secure.remove(Keys.USER_INFO);
   }
+};
+
+export const roleToPath = (role: string) => {
+  return `${role.toLocaleLowerCase().replace(/_/g, '-')}`;
+};
+
+export const roleToString = (role: string) => {
+  return role.replace(/_/g, ' ');
+};
+
+export const authLoader = (guest = false) => {
+  const user = Secure.getProfile();
+  if (!user && !guest) {
+    throw redirect(webAuthPaths.login);
+  }
+
+  if (user && guest) {
+    throw redirect(`${roleToPath(user.role)}/home`);
+  }
+  return null;
 };

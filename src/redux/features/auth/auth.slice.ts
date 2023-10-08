@@ -1,7 +1,14 @@
 import { initialState } from '@/interfaces/state.type';
 import { User } from '@/interfaces/user.type';
 import { createSlice } from '@reduxjs/toolkit';
-import { login, forgotPassword, resetPassword } from './auth.thunk';
+import {
+  login,
+  forgotPassword,
+  resetPassword,
+  logout,
+  updateProfile,
+  changePassword,
+} from './auth.thunk';
 
 const authSlice = createSlice({
   name: 'auth',
@@ -41,6 +48,37 @@ const authSlice = createSlice({
       state.loading = false;
     });
     builder.addCase(resetPassword.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    });
+    builder.addCase(logout.pending, state => {
+      state.loading = true;
+    });
+    builder.addCase(logout.fulfilled, state => {
+      state.loading = false;
+      state.data = null;
+    });
+    builder.addCase(logout.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    });
+    builder.addCase(updateProfile.pending, state => {
+      state.loading = true;
+    });
+    builder.addCase(updateProfile.fulfilled, state => {
+      state.loading = false;
+    });
+    builder.addCase(updateProfile.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    });
+    builder.addCase(changePassword.pending, state => {
+      state.loading = true;
+    });
+    builder.addCase(changePassword.fulfilled, state => {
+      state.loading = false;
+    });
+    builder.addCase(changePassword.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });

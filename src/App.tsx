@@ -4,16 +4,20 @@ import {
 } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import LoginPage from './pages/login/LoginPage';
+import LoginPage from './pages/auth/LoginPage';
 import AuthRoute from './routes/AuthRoute';
 import { webAuthPaths } from './constants/path';
-import ForgotPasswordPage from './pages/login/ForgotPasswordPage';
-import ResetPasswordPage from './pages/login/ResetPasswordPage';
+import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
+import ResetPasswordPage from './pages/auth/ResetPasswordPage';
+import { protectedRoutes } from './routes/protectedRoutes';
+import { authLoader } from './helpers/isAuth';
+import NotFoundPage from './pages/auth/NotFoundPage';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <AuthRoute />,
+    loader: () => authLoader(true),
     children: [
       {
         path: webAuthPaths.login,
@@ -28,6 +32,14 @@ const router = createBrowserRouter([
         element: <ResetPasswordPage />,
       },
     ],
+  },
+  {
+    ...protectedRoutes(),
+    loader: () => authLoader(false),
+  },
+  {
+    path: '*',
+    element: <NotFoundPage />,
   },
 ]);
 

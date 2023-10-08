@@ -5,10 +5,8 @@ import { ChangeEvent, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { login } from '@/redux/features/auth/auth.thunk';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
-  const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
     username: '',
     password: '',
@@ -28,13 +26,16 @@ const LoginPage = () => {
   ) => {
     e.preventDefault();
     try {
-      await dispatch(login(credentials)).unwrap();
+      const user = await dispatch(login(credentials)).unwrap();
       toast.success('Login successful');
       setCredentials({
         username: '',
         password: '',
       });
-      navigate('/dashboard', { replace: true });
+
+      window.location.href = `${user.role
+        .toLocaleLowerCase()
+        .replace(/_/g, '-')}/home`;
     } catch (error) {
       const err = error as Error;
       toast.error(err.message);

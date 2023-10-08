@@ -29,7 +29,7 @@ const TextInput = ({
               : 'password'
             : type
         }
-        className="px-10 py-3 w-full bg-white rounded-lg border outline-none border-blue-500/30 focus:border-blue-500 placeholder:text-slate-600 placeholder:text-sm font-normal font-['Inter']"
+        className="disabled:bg-gray-100 disabled:cursor-not-allowed px-10 py-3 w-full bg-white rounded-lg border outline-none border-blue-500/30 focus:border-blue-500 placeholder:text-slate-600 placeholder:text-sm font-normal font-['Inter']"
       />
       <div className="absolute left-4 text-slate-600">{leftIcon}</div>
       {type === 'password' && (

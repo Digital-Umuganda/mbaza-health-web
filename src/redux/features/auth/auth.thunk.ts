@@ -93,3 +93,56 @@ export const resetPassword = createAsyncThunk(
     }
   },
 );
+
+export const logout = createAsyncThunk('auth/logout', async () => {
+  try {
+    new Http().default.post('/auth/logout');
+    Secure.clear();
+  } catch (error) {
+    // eslint-disable-next-line no-console
+  }
+});
+
+export const updateProfile = createAsyncThunk(
+  'auth/updateProfile',
+  async (data: Partial<User>) => {
+    try {
+      await new Http().default.put<User>(
+        '/user/update-profile',
+        data,
+      );
+      const previous = Secure.getProfile();
+      const newProfile = {
+        ...previous,
+        ...data,
+      };
+      Secure.set(Keys.USER_INFO, newProfile);
+    } catch (error) {
+      const err = error as ResponseError;
+      const message = err.response?.data.message || err.message;
+      throw new Error(message);
+    }
+  },
+);
+
+export const changePassword = createAsyncThunk(
+  'auth/changePassword',
+  async ({
+    oldPassword,
+    newPassword,
+  }: {
+    oldPassword: string;
+    newPassword: string;
+  }) => {
+    try {
+      await new Http().default.put<User>('/user/change-password', {
+        oldPassword,
+        newPassword,
+      });
+    } catch (error) {
+      const err = error as ResponseError;
+      const message = err.response?.data.message || err.message;
+      throw new Error(message);
+    }
+  },
+);

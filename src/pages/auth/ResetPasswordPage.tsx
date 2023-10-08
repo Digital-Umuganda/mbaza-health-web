@@ -5,10 +5,9 @@ import { ChangeEvent, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { resetPassword } from '@/redux/features/auth/auth.thunk';
 import { toast } from 'react-toastify';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const ResetPasswordPage = () => {
-  const navigate = useNavigate();
   const location = useLocation();
   const { username } = location.state as { username: string };
   const [credentials, setCredentials] = useState({
@@ -30,7 +29,7 @@ const ResetPasswordPage = () => {
   ) => {
     e.preventDefault();
     try {
-      await dispatch(
+      const user = await dispatch(
         resetPassword({ ...credentials, username }),
       ).unwrap();
       toast.success('Password reset successful');
@@ -38,7 +37,9 @@ const ResetPasswordPage = () => {
         verification_code: '',
         password: '',
       });
-      navigate('/dashboard', { replace: true });
+      window.location.href = `${user.role
+        .toLocaleLowerCase()
+        .replace(/_/g, '-')}/home`;
     } catch (error) {
       const err = error as Error;
       toast.error(err.message);
