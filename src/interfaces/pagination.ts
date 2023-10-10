@@ -8,3 +8,8 @@ export interface PaginatedData<T> {
     search?: string;
   };
 }
+
+export interface Params<T>
+  extends Partial<PaginatedData<T>['pagination']> {
+  role?: string;
+}

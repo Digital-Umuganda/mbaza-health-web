@@ -13,10 +13,12 @@ import { loadingBarMiddleware } from 'react-redux-loading-bar';
 import errorMiddleware from '../config/error-middleware';
 import loggerMiddleware from '../config/logger-middleware';
 import authSlice from './features/auth/auth.slice';
+import userSlice from './features/users/user.slice';
 
 const store = configureStore({
   reducer: {
     auth: authSlice,
+    user: userSlice,
   },
   middleware(getDefaultMiddleware) {
     return getDefaultMiddleware({

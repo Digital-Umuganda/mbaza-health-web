@@ -12,7 +12,7 @@ const isAuth = (token = Secure.getToken()) => {
     const jwt: { exp: number; sub: string } = jwtDecode(token);
     const now = new Date();
     if (now.getTime() > jwt.exp * 1000) {
-      Secure.removeToken();
+      Secure.clear();
       return null;
     }
 
@@ -72,11 +72,17 @@ export const roleToString = (role: string) => {
 export const authLoader = (guest = false) => {
   const user = Secure.getProfile();
   if (!user && !guest) {
+    Secure.clear();
     throw redirect(webAuthPaths.login);
   }
 
   if (user && guest) {
     throw redirect(`${roleToPath(user.role)}/home`);
+  }
+
+  if (!guest && !isAuth()?.sub) {
+    Secure.clear();
+    throw redirect(webAuthPaths.login);
   }
   return null;
 };
