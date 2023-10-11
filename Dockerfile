@@ -9,4 +9,4 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY . .
 
 EXPOSE 5000
-CMD ["yarn", "start"]
+CMD ["yarn", "dev"]
