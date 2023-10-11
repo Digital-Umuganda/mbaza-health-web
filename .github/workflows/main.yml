@@ -1,0 +1,13 @@
+name: CI
+on:
+  push:
+    branches: ["develop"]
+
+jobs:
+  build:
+    runs-on:
+      - gpt-4
+    steps:
+      - uses: actions/checkout@v3
+      - name: deploy tts to server
+      - yarn build
