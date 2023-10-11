@@ -1,30 +1,36 @@
 import SelectInput from '@/components/partials/inputs/SelectInput';
 import TextInput from '@/components/partials/inputs/TextInput';
 import DataWidget from '@/components/shared/data/DataWidget';
-import { roleToString } from '@/helpers/isAuth';
-import { allowedRoles } from '@/interfaces/user.type';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
-import { HiOutlineUserCircle, HiSearch } from 'react-icons/hi';
+import {
+  HiArrowLeft,
+  HiOutlineUserCircle,
+  HiSearch,
+} from 'react-icons/hi';
 import { useEffect } from 'react';
-import { getUsers } from '@/redux/features/users/user.thunk';
-import AccountsTableData from '@/components/shared/accounts/AccountsTableData';
+import { getRatings } from '@/redux/features/ratings/rating.thunk';
 import AppPagination from '@/components/shared/data/AppPagination';
-import NewAccount from '@/components/shared/accounts/NewAccount';
+import AccountDetailTableData from '@/components/shared/accounts/AccountDetailTableData';
+import { Link, useLocation, useParams } from 'react-router-dom';
+import { Rate, chatRatings } from '@/interfaces/rating.type';
 
-const AccountsPage = () => {
+const AccountDetailPage = () => {
+  const { id } = useParams<{ id: string }>();
+  const { state } = useLocation();
   const {
     data: { data, pagination },
     loading,
-  } = useAppSelector(state => state.user);
+  } = useAppSelector(state => state.rating);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(getUsers({}));
+    dispatch(getRatings({ user_id: id }));
   }, []);
 
   const onChangePage = (page: number) => {
     dispatch(
-      getUsers({
+      getRatings({
+        user_id: id,
         currentPage: page,
         itemsPerPage: pagination.itemsPerPage,
       }),
@@ -33,16 +39,18 @@ const AccountsPage = () => {
 
   const onChangePerPage = (perPage: number) => {
     dispatch(
-      getUsers({
+      getRatings({
+        user_id: id,
         itemsPerPage: perPage,
       }),
     );
   };
 
-  const handleSelectRole = (role: string) => {
+  const handleSelectRating = (rating: Rate) => {
     dispatch(
-      getUsers({
-        role,
+      getRatings({
+        user_id: id,
+        rating,
         itemsPerPage: pagination.itemsPerPage,
       }),
     );
@@ -51,7 +59,8 @@ const AccountsPage = () => {
   const handleSearch = (search: string) => {
     if (loading) return;
     dispatch(
-      getUsers({
+      getRatings({
+        user_id: id,
         search,
         itemsPerPage: pagination.itemsPerPage,
       }),
@@ -62,9 +71,14 @@ const AccountsPage = () => {
     <>
       <div className="w-full py-4 px-8 bg-white rounded-2xl border flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center space-x-3">
-          <HiOutlineUserCircle size={24} className="text-amber-400" />
+          <Link
+            to="/admin/accounts"
+            className="bg-blue-500/10 p-2 rounded-full"
+          >
+            <HiArrowLeft size={16} className="text-blue-500" />
+          </Link>
           <p className="text-slate-600 text-2xl font-medium">
-            Accounts
+            {state?.fullName ?? 'Ratings'}
           </p>
         </div>
         <div className="flex items-center gap-x-4 gap-y-2 flex-wrap">
@@ -90,19 +104,17 @@ const AccountsPage = () => {
             options={[
               {
                 value: '',
-                label: 'All accounts',
+                label: 'All ratings',
               },
-              ...allowedRoles.map(role => ({
-                value: role,
-                label: roleToString(role),
+              ...chatRatings.map(item => ({
+                value: item,
+                label: item,
               })),
             ]}
             onChange={({ target }) => {
-              handleSelectRole(target.value);
+              handleSelectRating(target.value as Rate);
             }}
           />
-
-          <NewAccount />
         </div>
       </div>
 
@@ -111,19 +123,19 @@ const AccountsPage = () => {
           <thead className="text-xs uppercase bg-blue-500 bg-opacity-10 text-black">
             <tr>
               <th scope="col" className="px-6 py-3">
-                NAMEs
+                Date
               </th>
               <th scope="col" className="px-6 py-3">
-                Email
+                Kinyarwanda
               </th>
               <th scope="col" className="px-6 py-3">
-                PHONE NUMBER
+                English
               </th>
               <th scope="col" className="px-6 py-3">
-                Role
+                Rating
               </th>
               <th scope="col" className="px-6 py-3">
-                Last Login
+                Comment
               </th>
               <th scope="col" className="px-6 py-3">
                 Action
@@ -133,11 +145,11 @@ const AccountsPage = () => {
           <tbody>
             <DataWidget isLoading={loading && !data.length}>
               {data.length ? (
-                <AccountsTableData data={data} />
+                <AccountDetailTableData data={data} />
               ) : (
                 <tr>
                   <td colSpan={6} className="text-center px-6 py-4">
-                    No accounts found
+                    No ratings found
                   </td>
                 </tr>
               )}
@@ -155,4 +167,4 @@ const AccountsPage = () => {
   );
 };
 
-export default AccountsPage;
+export default AccountDetailPage;

@@ -4,6 +4,7 @@ import { RouteObject } from 'react-router-dom';
 import AdminDashboardPage from '@/pages/admin/AdminDashboardPage';
 import ProfilePage from '@/pages/profile/ProfilePage';
 import AccountsPage from '@/pages/accounts/AccountsPage';
+import AccountDetailPage from '@/pages/accounts/AccountDetailPage';
 
 export const protectedRoutes = (
   role = Secure.getProfile()?.role,
@@ -28,6 +29,10 @@ export const protectedRoutes = (
           {
             path: 'accounts',
             element: <AccountsPage />,
+          },
+          {
+            path: 'accounts/:id',
+            element: <AccountDetailPage />,
           },
         ],
       };

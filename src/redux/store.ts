@@ -14,11 +14,13 @@ import errorMiddleware from '../config/error-middleware';
 import loggerMiddleware from '../config/logger-middleware';
 import authSlice from './features/auth/auth.slice';
 import userSlice from './features/users/user.slice';
+import ratingSlice from './features/ratings/rating.slice';
 
 const store = configureStore({
   reducer: {
     auth: authSlice,
     user: userSlice,
+    rating: ratingSlice,
   },
   middleware(getDefaultMiddleware) {
     return getDefaultMiddleware({

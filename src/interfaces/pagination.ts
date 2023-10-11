@@ -1,3 +1,5 @@
+import { Rate } from './rating.type';
+
 export interface PaginatedData<T> {
   data: T[];
   pagination: {
@@ -12,4 +14,6 @@ export interface PaginatedData<T> {
 export interface Params<T>
   extends Partial<PaginatedData<T>['pagination']> {
   role?: string;
+  user_id?: string;
+  rating?: Rate;
 }

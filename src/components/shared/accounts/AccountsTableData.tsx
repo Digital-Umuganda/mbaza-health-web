@@ -30,7 +30,10 @@ const AccountsTableData = ({ data }: { data: User[] }) => {
             {allowedRoles.includes(item.role) &&
               item.role !== 'ADMIN' && (
                 <Link
-                  to="#"
+                  to={`/admin/accounts/${item.id}`}
+                  state={{
+                    fullName: item.name,
+                  }}
                   className="bg-slate-600/10 rounded-lg border p-2 font-medium flex w-fit"
                 >
                   <HiEye size={24} />
