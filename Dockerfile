@@ -1,4 +1,4 @@
-FROM node:14.20.1-bullseye as builder
+FROM node:20.8.0-bullseye-slim as builder
 
 COPY package*.json ./
 
