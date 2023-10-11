@@ -30,6 +30,14 @@ export const login = createAsyncThunk(
     username: string;
     password: string;
   }) => {
+    if (!username.includes('@')) {
+      if (username.startsWith('+')) {
+        username = username.substring(1);
+      }
+      if (!username.startsWith('25')) {
+        username = '25' + username;
+      }
+    }
     try {
       const response = await new Http().default.post('/auth/login', {
         username,
@@ -52,7 +60,15 @@ export const forgotPassword = createAsyncThunk(
   'auth/forgotPassword',
   async (username: string) => {
     try {
-      const field = username.includes('@') ? 'email' : 'username';
+      const field = username.includes('@') ? 'email' : 'phone';
+      if (field !== 'email') {
+        if (username.startsWith('+')) {
+          username = username.substring(1);
+        }
+        if (!username.startsWith('25')) {
+          username = '25' + username;
+        }
+      }
       await new Http().default.post(
         `/auth/send-code/${username}?field=${field}`,
       );
@@ -76,7 +92,7 @@ export const resetPassword = createAsyncThunk(
     verification_code: string;
   }) => {
     try {
-      const field = username.includes('@') ? 'email' : 'username';
+      const field = username.includes('@') ? 'email' : 'phone';
       const { data } = await new Http().default.post(
         `/auth/reset-password/${username}?field=${field}`,
         {
@@ -139,6 +155,40 @@ export const changePassword = createAsyncThunk(
         oldPassword,
         newPassword,
       });
+    } catch (error) {
+      const err = error as ResponseError;
+      const message = err.response?.data.message || err.message;
+      throw new Error(message);
+    }
+  },
+);
+
+export const verifyUser = createAsyncThunk(
+  'auth/verifyUser',
+  async ({
+    username,
+    verification_code,
+  }: {
+    username: string;
+    verification_code: string;
+  }) => {
+    try {
+      const field = username.includes('@') ? 'email' : 'phone';
+
+      if (field !== 'email') {
+        if (username.startsWith('+')) {
+          username = username.substring(1);
+        }
+        if (!username.startsWith('25')) {
+          username = '25' + username;
+        }
+      }
+
+      const { data } = await new Http().default.post(
+        `/auth/verify-user/${username}/code/${verification_code}?field=${field}`,
+      );
+      const authData = await getAuthData(data.access_token);
+      return authData;
     } catch (error) {
       const err = error as ResponseError;
       const message = err.response?.data.message || err.message;

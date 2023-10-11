@@ -8,6 +8,7 @@ import {
   logout,
   updateProfile,
   changePassword,
+  verifyUser,
 } from './auth.thunk';
 
 const authSlice = createSlice({
@@ -79,6 +80,16 @@ const authSlice = createSlice({
       state.loading = false;
     });
     builder.addCase(changePassword.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    });
+    builder.addCase(verifyUser.pending, state => {
+      state.loading = true;
+    });
+    builder.addCase(verifyUser.fulfilled, state => {
+      state.loading = false;
+    });
+    builder.addCase(verifyUser.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });

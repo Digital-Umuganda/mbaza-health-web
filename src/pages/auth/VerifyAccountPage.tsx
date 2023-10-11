@@ -1,18 +1,17 @@
 import Button from '@/components/partials/buttons/Button';
 import TextInput from '@/components/partials/inputs/TextInput';
-import { HiPhone, HiKey } from 'react-icons/hi';
+import { HiCheckCircle } from 'react-icons/hi';
 import { ChangeEvent, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
-import { login } from '@/redux/features/auth/auth.thunk';
+import { verifyUser } from '@/redux/features/auth/auth.thunk';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
-import { webAuthPaths } from '@/constants/path';
+import { useLocation } from 'react-router-dom';
 
-const LoginPage = () => {
-  const navigate = useNavigate();
+const VerifyAccountPage = () => {
+  const location = useLocation();
+  const { username } = location.state as { username: string };
   const [credentials, setCredentials] = useState({
-    username: '',
-    password: '',
+    verification_code: '',
   });
   const { loading } = useAppSelector(state => state.auth);
   const dispatch = useAppDispatch();
@@ -29,52 +28,36 @@ const LoginPage = () => {
   ) => {
     e.preventDefault();
     try {
-      const user = await dispatch(login(credentials)).unwrap();
-      toast.success('Login successful');
+      const user = await dispatch(
+        verifyUser({ ...credentials, username }),
+      ).unwrap();
+      toast.success('Account verification successful');
       setCredentials({
-        username: '',
-        password: '',
+        verification_code: '',
       });
-
       window.location.href = `${user.role
         .toLocaleLowerCase()
         .replace(/_/g, '-')}/home`;
     } catch (error) {
       const err = error as Error;
-      if (err.message?.toLowerCase()?.includes('verify your')) {
-        navigate(webAuthPaths.sendTwoFactorCode, {
-          state: { username: credentials.username },
-        });
-      } else {
-        toast.error(err.message);
-      }
+      toast.error(err.message);
     }
   };
   return (
     <form onSubmit={handleSubmit} className="flex flex-col mt-10">
       <TextInput
-        leftIcon={<HiPhone size={16} />}
-        placeholder="Email or Phone Number"
-        name="username"
-        value={credentials.username}
-        onChange={onChange}
-      />
-
-      <TextInput
-        leftIcon={<HiKey size={16} />}
-        className="mt-4"
-        placeholder="Password"
-        type="password"
-        name="password"
-        value={credentials.password}
+        leftIcon={<HiCheckCircle size={16} />}
+        placeholder="Enter verification code"
+        name="verification_code"
+        value={credentials.verification_code}
         onChange={onChange}
       />
 
       <Button
         type="submit"
-        label="Login"
+        label="SUBMIT"
         disabled={
-          loading || !credentials.username || !credentials.password
+          loading || !credentials.verification_code || !username
         }
         className="mt-8 w-full disabled:bg-opacity-60 disabled:cursor-not-allowed"
       />
@@ -82,4 +65,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default VerifyAccountPage;

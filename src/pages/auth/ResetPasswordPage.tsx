@@ -68,7 +68,9 @@ const ResetPasswordPage = () => {
       <Button
         type="submit"
         label="SUBMIT"
-        disabled={loading || !credentials.verification_code}
+        disabled={
+          loading || !credentials.verification_code || !username
+        }
         className="mt-8 w-full disabled:bg-opacity-60 disabled:cursor-not-allowed"
       />
     </form>

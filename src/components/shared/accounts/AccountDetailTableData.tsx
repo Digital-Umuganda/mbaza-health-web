@@ -41,7 +41,7 @@ const AccountDetailTableData = ({
           </td>
           <td className="px-6 py-4">
             <span className="block w-full max-w-[320px] truncate">
-              {item.Ratings.comment}
+              {item.Ratings.comment || '-'}
             </span>
           </td>
           <td className="px-6 py-4">

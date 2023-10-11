@@ -32,6 +32,24 @@ const AuthRoute = () => {
           link: webAuthPaths.login,
           backLabel: 'Login instead',
         };
+      case webAuthPaths.sendTwoFactorCode:
+        return {
+          title: 'Verify your account!',
+          subTitle:
+            'Click the button below to send verification code to your email or phone number',
+          link: webAuthPaths.login,
+          backLabel: 'Login instead',
+        };
+
+      case webAuthPaths.verifyTwoFactorCode:
+        return {
+          title: 'Verify your account!',
+          subTitle:
+            'Provide the verification code sent to your email or phone number',
+          link: webAuthPaths.login,
+          backLabel: 'Login instead',
+        };
+
       default:
         return {
           title: 'Welcome!',

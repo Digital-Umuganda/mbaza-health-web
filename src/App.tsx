@@ -12,6 +12,8 @@ import ResetPasswordPage from './pages/auth/ResetPasswordPage';
 import { protectedRoutes } from './routes/protectedRoutes';
 import { authLoader } from './helpers/isAuth';
 import NotFoundPage from './pages/auth/NotFoundPage';
+import TwoFactorPage from './pages/auth/TwoFactorPage';
+import VerifyAccountPage from './pages/auth/VerifyAccountPage';
 
 const router = createBrowserRouter([
   {
@@ -30,6 +32,14 @@ const router = createBrowserRouter([
       {
         path: webAuthPaths.resetPassword,
         element: <ResetPasswordPage />,
+      },
+      {
+        path: webAuthPaths.sendTwoFactorCode,
+        element: <TwoFactorPage />,
+      },
+      {
+        path: webAuthPaths.verifyTwoFactorCode,
+        element: <VerifyAccountPage />,
       },
     ],
   },
