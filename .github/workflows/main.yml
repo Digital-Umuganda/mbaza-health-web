@@ -11,4 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: build packages
-        run: yarn build
+        run: |
+          yarn install
+          yarn build
