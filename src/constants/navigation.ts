@@ -17,17 +17,17 @@ export const adminSidebarNavLinks = [
 export const linguistNavLinks = [
   {
     label: 'Home',
-    path: '/linguist/home',
+    path: '/home',
     icon: HiOutlineHome,
   },
   {
     label: 'Dashboard',
-    path: '/linguist/dashboard',
+    path: '/dashboard',
     icon: MdDashboard,
   },
   {
     label: 'My Account',
-    path: '/linguist/profile',
+    path: '/profile',
     icon: HiOutlineUsers,
   },
 ];

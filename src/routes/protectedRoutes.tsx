@@ -7,6 +7,7 @@ import AccountsPage from '@/pages/accounts/AccountsPage';
 import AccountDetailPage from '@/pages/accounts/AccountDetailPage';
 import LinguistRoute from './LinguistRoute';
 import LinguistHomePage from '@/pages/linguist/LinguistHomePage';
+import HealthWorkerHomePage from '@/pages/health-worker/HealthWorkerHomePage';
 
 export const protectedRoutes = (
   role = Secure.getProfile()?.role,
@@ -57,8 +58,18 @@ export const protectedRoutes = (
     case 'PROFESSIONAL_HEALTH_WORKER':
       return {
         path: '/professional-health-worker',
-        element: <AdminRoute />,
-        children: [...commonRoutes],
+        element: <LinguistRoute />,
+        children: [
+          ...commonRoutes,
+          {
+            path: 'home',
+            element: <HealthWorkerHomePage />,
+          },
+          {
+            path: 'dashboard',
+            element: <AccountDetailPage />,
+          },
+        ],
       };
     default:
       return {};

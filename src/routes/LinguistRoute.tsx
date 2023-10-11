@@ -99,7 +99,7 @@ const LinguistRoute = () => {
               {linguistNavLinks.map(link => (
                 <NavLink
                   key={link.label}
-                  to={link.path}
+                  to={`/${roleToPath(role)}${link.path}`}
                   className={({ isActive }) =>
                     `${
                       isActive
@@ -157,7 +157,7 @@ const LinguistRoute = () => {
             {linguistNavLinks.map(link => (
               <li key={link.label}>
                 <NavLink
-                  to={link.path}
+                  to={`/${roleToPath(role)}${link.path}`}
                   className={({ isActive }) =>
                     `${
                       isActive
