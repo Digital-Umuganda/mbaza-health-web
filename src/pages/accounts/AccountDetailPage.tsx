@@ -14,10 +14,12 @@ import AccountDetailTableData from '@/components/shared/accounts/AccountDetailTa
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { Rate, chatRatings } from '@/interfaces/rating.type';
 import Secure from '@/helpers/secureLS';
+import { roleToPath } from '@/helpers/isAuth';
 
 const AccountDetailPage = () => {
   const { id } = useParams<{ id: string }>();
-  const user_id = id ?? Secure.getProfile()?.id;
+  const profile = Secure.getProfile();
+  const user_id = id ?? profile?.id;
   const { state } = useLocation();
   const {
     data: { data, pagination },
@@ -83,14 +85,18 @@ const AccountDetailPage = () => {
     <>
       <div className="w-full py-4 px-8 bg-white rounded-2xl border flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center space-x-3">
-          <Link
-            to="/admin/accounts"
-            className="bg-blue-500/10 p-2 rounded-full"
-          >
-            <HiArrowLeft size={16} className="text-blue-500" />
-          </Link>
+          {profile?.role === 'ADMIN' && (
+            <Link
+              to={`/${roleToPath(profile?.role as string)}/accounts`}
+              className="bg-blue-500/10 p-2 rounded-full"
+            >
+              <HiArrowLeft size={16} className="text-blue-500" />
+            </Link>
+          )}
           <p className="text-slate-600 text-2xl font-medium">
-            {fullName}
+            {profile?.role === 'ADMIN'
+              ? fullName
+              : 'ANNOTATION HISTORY'}
           </p>
         </div>
         <div className="flex items-center gap-x-4 gap-y-2 flex-wrap">
