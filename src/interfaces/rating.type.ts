@@ -17,12 +17,6 @@ export interface IRating {
   rating: Rate;
 }
 
-export interface QuestionAnswer {
-  id: string;
-  kinyarwanda_question: string;
-  english_question: string;
-}
-
 export interface RatingResponse {
   Ratings: IRating;
   kinyarwanda_question: string;

@@ -7,15 +7,17 @@ import {
   HiOutlineUserCircle,
   HiSearch,
 } from 'react-icons/hi';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { getRatings } from '@/redux/features/ratings/rating.thunk';
 import AppPagination from '@/components/shared/data/AppPagination';
 import AccountDetailTableData from '@/components/shared/accounts/AccountDetailTableData';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { Rate, chatRatings } from '@/interfaces/rating.type';
+import Secure from '@/helpers/secureLS';
 
 const AccountDetailPage = () => {
   const { id } = useParams<{ id: string }>();
+  const user_id = id ?? Secure.getProfile()?.id;
   const { state } = useLocation();
   const {
     data: { data, pagination },
@@ -24,13 +26,13 @@ const AccountDetailPage = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(getRatings({ user_id: id }));
+    dispatch(getRatings({ user_id }));
   }, []);
 
   const onChangePage = (page: number) => {
     dispatch(
       getRatings({
-        user_id: id,
+        user_id,
         currentPage: page,
         itemsPerPage: pagination.itemsPerPage,
       }),
@@ -40,7 +42,7 @@ const AccountDetailPage = () => {
   const onChangePerPage = (perPage: number) => {
     dispatch(
       getRatings({
-        user_id: id,
+        user_id,
         itemsPerPage: perPage,
       }),
     );
@@ -49,7 +51,7 @@ const AccountDetailPage = () => {
   const handleSelectRating = (rating: Rate) => {
     dispatch(
       getRatings({
-        user_id: id,
+        user_id,
         rating,
         itemsPerPage: pagination.itemsPerPage,
       }),
@@ -60,12 +62,22 @@ const AccountDetailPage = () => {
     if (loading) return;
     dispatch(
       getRatings({
-        user_id: id,
+        user_id,
         search,
         itemsPerPage: pagination.itemsPerPage,
       }),
     );
   };
+
+  const fullName = useMemo(() => {
+    if (state?.fullName) {
+      return state.fullName;
+    } else if (!id && Secure.getProfile()?.name) {
+      return Secure.getProfile()?.name;
+    } else {
+      return 'Ratings';
+    }
+  }, [id, state?.fullName]);
 
   return (
     <>
@@ -78,7 +90,7 @@ const AccountDetailPage = () => {
             <HiArrowLeft size={16} className="text-blue-500" />
           </Link>
           <p className="text-slate-600 text-2xl font-medium">
-            {state?.fullName ?? 'Ratings'}
+            {fullName}
           </p>
         </div>
         <div className="flex items-center gap-x-4 gap-y-2 flex-wrap">

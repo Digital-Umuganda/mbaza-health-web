@@ -15,12 +15,14 @@ import loggerMiddleware from '../config/logger-middleware';
 import authSlice from './features/auth/auth.slice';
 import userSlice from './features/users/user.slice';
 import ratingSlice from './features/ratings/rating.slice';
+import questionAnswerSlice from './features/question-answer/question.answer.slice';
 
 const store = configureStore({
   reducer: {
     auth: authSlice,
     user: userSlice,
     rating: ratingSlice,
+    questionAnswer: questionAnswerSlice,
   },
   middleware(getDefaultMiddleware) {
     return getDefaultMiddleware({

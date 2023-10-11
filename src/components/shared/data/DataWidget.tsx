@@ -6,7 +6,11 @@ interface Props {
 }
 const DataWidget = ({ isLoading = false, children }: Props) => {
   if (isLoading) {
-    return <Spinner size="xl" />;
+    return (
+      <p className="flex flex-col items-center">
+        <Spinner size="xl" />
+      </p>
+    );
   }
   return <>{children}</>;
 };
