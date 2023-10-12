@@ -129,10 +129,16 @@ const ProfilePage = () => {
                 address: target.value,
               }));
             }}
-            options={addresses.map(address => ({
-              value: address,
-              label: address,
-            }))}
+            options={[
+              {
+                value: '',
+                label: 'Select an address',
+              },
+              ...addresses.map(address => ({
+                value: address,
+                label: address,
+              })),
+            ]}
           />
           {user.phone_number && (
             <TextInput

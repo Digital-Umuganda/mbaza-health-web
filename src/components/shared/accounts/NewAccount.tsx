@@ -25,8 +25,8 @@ export default function NewAccount() {
   const { loading } = useAppSelector(state => state.user);
   const [personalInfo, setPersonalInfo] = useState({
     name: '',
-    address: addresses[0],
-    role: allowedRoles[1],
+    address: '',
+    role: '' as Role,
     email: '',
     phone_number: '',
   });
@@ -99,6 +99,7 @@ export default function NewAccount() {
                 leftIcon={<HiOutlineLocationMarker size={16} />}
                 placeholder="Address"
                 name="address"
+                required
                 value={personalInfo.address}
                 onChange={({ target }) => {
                   setPersonalInfo(prev => ({
@@ -106,10 +107,16 @@ export default function NewAccount() {
                     address: target.value,
                   }));
                 }}
-                options={addresses.map(address => ({
-                  value: address,
-                  label: address,
-                }))}
+                options={[
+                  {
+                    value: '',
+                    label: 'Select an address',
+                  },
+                  ...addresses.map(address => ({
+                    value: address,
+                    label: address,
+                  })),
+                ]}
               />
 
               <TextInput
@@ -134,6 +141,7 @@ export default function NewAccount() {
                 leftIcon={<HiUser size={16} />}
                 placeholder="Role"
                 name="role"
+                required
                 value={personalInfo.role}
                 onChange={({ target }) => {
                   setPersonalInfo(prev => ({
@@ -141,10 +149,16 @@ export default function NewAccount() {
                     role: target.value as Role,
                   }));
                 }}
-                options={allowedRoles.map(role => ({
-                  value: role,
-                  label: roleToString(role),
-                }))}
+                options={[
+                  {
+                    value: '',
+                    label: 'Select a role',
+                  },
+                  ...allowedRoles.map(role => ({
+                    value: role,
+                    label: roleToString(role),
+                  })),
+                ]}
                 className="col-span-full"
               />
 
