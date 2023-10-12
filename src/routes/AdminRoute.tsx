@@ -41,7 +41,7 @@ const AdminRoute = () => {
   }, [toggleSidebar]);
 
   if (!name || !role) {
-    return <Navigate to="/login" replace={true} />;
+    return <Navigate to="/" replace={true} />;
   }
 
   const onToggle = () => {
@@ -51,7 +51,6 @@ const AdminRoute = () => {
   const onLogout = () => {
     onToggle();
     dispatch(logout());
-    window.location.href = '/';
   };
 
   return (

@@ -113,9 +113,12 @@ export const resetPassword = createAsyncThunk(
 export const logout = createAsyncThunk('auth/logout', async () => {
   try {
     new Http().default.post('/auth/logout');
-    Secure.clear();
   } catch (error) {
     // eslint-disable-next-line no-console
+  } finally {
+    Secure.remove(Keys.USER_INFO);
+    Secure.removeToken();
+    window.location.href = '/';
   }
 });
 

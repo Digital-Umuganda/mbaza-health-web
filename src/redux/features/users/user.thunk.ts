@@ -53,3 +53,20 @@ export const createUser = createAsyncThunk(
     }
   },
 );
+
+export const blockUser = createAsyncThunk(
+  'users/blockUser',
+  async (id: string) => {
+    try {
+      const { data } = await new Http().default.put(
+        `/user/block/${id}`,
+      );
+
+      return data.message as string;
+    } catch (error) {
+      const err = error as ResponseError;
+      const message = err.response?.data.message || err.message;
+      throw new Error(message);
+    }
+  },
+);

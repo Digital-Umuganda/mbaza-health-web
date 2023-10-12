@@ -1,7 +1,7 @@
 import { initialPaginatedState } from '@/interfaces/state.type';
 import { User } from '@/interfaces/user.type';
 import { createSlice } from '@reduxjs/toolkit';
-import { getUsers, createUser } from './user.thunk';
+import { getUsers, createUser, blockUser } from './user.thunk';
 
 const userSlice = createSlice({
   name: 'user',
@@ -27,6 +27,16 @@ const userSlice = createSlice({
       state.data.data.unshift(action.payload);
     });
     builder.addCase(createUser.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    });
+    builder.addCase(blockUser.pending, state => {
+      state.loading = true;
+    });
+    builder.addCase(blockUser.fulfilled, state => {
+      state.loading = false;
+    });
+    builder.addCase(blockUser.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });

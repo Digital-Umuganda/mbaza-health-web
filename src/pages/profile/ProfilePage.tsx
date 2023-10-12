@@ -35,7 +35,7 @@ const ProfilePage = () => {
     newPassword: '',
   });
   if (!user) {
-    return <Navigate to="/login" replace={true} />;
+    return <Navigate to="/" replace={true} />;
   }
 
   const onChangePersonalInfo = (e: ChangeEvent<HTMLInputElement>) => {
