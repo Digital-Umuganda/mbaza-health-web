@@ -61,7 +61,7 @@ const AccountsTableData = ({ data }: { data: User[] }) => {
                     fullName: item.name,
                   }}
                   className={`bg-slate-600/10 rounded-lg border p-1 font-medium flex w-fit ${
-                    item.role !== 'ADMIN' ? 'hidden' : 'block'
+                    item.role === 'ADMIN' ? 'hidden' : 'block'
                   }`}
                 >
                   <HiEye size={24} />

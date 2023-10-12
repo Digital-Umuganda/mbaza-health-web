@@ -92,6 +92,10 @@ const AccountsPage = () => {
                 value: '',
                 label: 'All accounts',
               },
+              {
+                label: 'COMMUNITY HEALTH WORKER',
+                value: 'USER',
+              },
               ...allowedRoles.map(role => ({
                 value: role,
                 label: roleToString(role),
