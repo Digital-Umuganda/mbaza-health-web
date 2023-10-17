@@ -143,7 +143,7 @@ const AccountDetailPage = () => {
               <th scope="col" className="px-6 py-3">
                 Date
               </th>
-              {!data.length && data[0]?.title ? (
+              {!data[0]?.title ? (
                 <>
                   <th scope="col" className="px-6 py-3">
                     Kinyarwanda

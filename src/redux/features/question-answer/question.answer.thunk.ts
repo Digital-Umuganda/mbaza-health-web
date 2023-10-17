@@ -9,10 +9,14 @@ import { Rate } from '@/interfaces/rating.type';
 
 export const getRandomQuestion = createAsyncThunk(
   'questionAnswer/getRandomQuestion',
-  async () => {
+  async (id: string | null) => {
     try {
+      let url = '/messages/random';
+      if (id) {
+        url += `?message_id=${id}`;
+      }
       const { data } = await new Http().default.get<QuestionAnswer>(
-        '/messages/random',
+        url,
       );
       return data;
     } catch (error) {

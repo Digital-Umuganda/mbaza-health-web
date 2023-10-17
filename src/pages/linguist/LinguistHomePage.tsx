@@ -3,16 +3,19 @@ import AnnotateConversation from '@/components/shared/linguist/AnnotateConversat
 import { getRandomQuestion } from '@/redux/features/question-answer/question.answer.thunk';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 const LinguistHomePage = () => {
   const { data, loading } = useAppSelector(
     state => state.questionAnswer,
   );
   const dispatch = useAppDispatch();
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get('id');
 
   useEffect(() => {
-    dispatch(getRandomQuestion());
-  }, []);
+    dispatch(getRandomQuestion(id));
+  }, [id]);
 
   return (
     <>

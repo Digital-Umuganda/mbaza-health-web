@@ -12,6 +12,7 @@ export interface QuestionAnswer {
   english_response: string;
   updated_at: string | null;
   chat_id: string;
+  ratings: IRating[];
 }
 
 export interface IChat {

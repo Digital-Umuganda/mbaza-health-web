@@ -1,17 +1,23 @@
 import Button from '@/components/partials/buttons/Button';
 import QuestionAnswer from '@/components/shared/linguist/QuestionAnswer';
+import { roleToPath } from '@/helpers/isAuth';
+import Secure from '@/helpers/secureLS';
 import { QuestionAnswer as QuestionType } from '@/interfaces/question.answer.type';
 import { Rate, chatRatings } from '@/interfaces/rating.type';
 import {
   annotate,
   getRandomQuestion,
 } from '@/redux/features/question-answer/question.answer.thunk';
+import { updateRating } from '@/redux/features/ratings/rating.thunk';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { HiOutlineRefresh } from 'react-icons/hi';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const AnnotateConversation = ({ data }: { data: QuestionType }) => {
+  const profile = Secure.getProfile();
+  const navigate = useNavigate();
   const [annotation, setAnnotation] = useState({
     rating: '' as Rate,
     comment: '',
@@ -19,7 +25,7 @@ const AnnotateConversation = ({ data }: { data: QuestionType }) => {
   const { loading } = useAppSelector(state => state.questionAnswer);
   const dispatch = useAppDispatch();
   const onRefresh = () => {
-    dispatch(getRandomQuestion());
+    dispatch(getRandomQuestion(null));
   };
 
   const handleAnnotation = async (
@@ -27,23 +33,44 @@ const AnnotateConversation = ({ data }: { data: QuestionType }) => {
   ) => {
     event.preventDefault();
     try {
-      await dispatch(
-        annotate({
-          ...annotation,
-          messageId: data.id,
-        }),
-      ).unwrap();
-      toast.success('Annotation successful');
-      setAnnotation({
-        rating: '' as Rate,
-        comment: '',
-      });
-      onRefresh();
+      if (data.ratings?.length) {
+        await dispatch(
+          updateRating({
+            ...annotation,
+            id: data.ratings[0].id,
+          }),
+        ).unwrap();
+        toast.success('Annotation updated');
+        navigate(`/${roleToPath(profile?.role as string)}/dashboard`);
+      } else {
+        await dispatch(
+          annotate({
+            ...annotation,
+            messageId: data.id,
+          }),
+        ).unwrap();
+        toast.success('Annotation successful');
+        setAnnotation({
+          rating: '' as Rate,
+          comment: '',
+        });
+        onRefresh();
+      }
     } catch (error) {
       const err = error as Error;
       toast.error(err.message);
     }
   };
+
+  useEffect(() => {
+    if (data.ratings?.length) {
+      const [first] = data.ratings;
+      setAnnotation({
+        rating: first.rating,
+        comment: first.comment || '',
+      });
+    }
+  }, [data]);
 
   return (
     <div className="gap-4 flex flex-col md:flex-row w-full md:min-h-[80vh]">
@@ -143,7 +170,7 @@ const AnnotateConversation = ({ data }: { data: QuestionType }) => {
 
           <Button
             type="submit"
-            label="Submit"
+            label={data.ratings?.length ? 'Update' : 'Submit'}
             disabled={loading || !annotation.rating}
             className="uppercase mt-8 w-full disabled:bg-opacity-60 disabled:cursor-not-allowed"
           />
