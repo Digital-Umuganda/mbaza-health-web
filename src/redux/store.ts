@@ -16,6 +16,7 @@ import authSlice from './features/auth/auth.slice';
 import userSlice from './features/users/user.slice';
 import ratingSlice from './features/ratings/rating.slice';
 import questionAnswerSlice from './features/question-answer/question.answer.slice';
+import chatSlice from './features/question-answer/chat.slice';
 
 const store = configureStore({
   reducer: {
@@ -23,6 +24,7 @@ const store = configureStore({
     user: userSlice,
     rating: ratingSlice,
     questionAnswer: questionAnswerSlice,
+    chat: chatSlice,
   },
   middleware(getDefaultMiddleware) {
     return getDefaultMiddleware({

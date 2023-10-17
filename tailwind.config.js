@@ -15,6 +15,7 @@ export default {
         'slate-600': '#3D576F',
         'amber-400': '#F6BA15',
         'green-500': '#3CAF4A',
+        'slate-200': '#DAECE8',
       },
       fontFamily: {
         sans: ['Inter', ...defaultTheme.fontFamily.sans],

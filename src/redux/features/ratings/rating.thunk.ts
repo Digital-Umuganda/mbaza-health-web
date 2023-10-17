@@ -33,3 +33,23 @@ export const getRatings = createAsyncThunk(
     }
   },
 );
+
+export const updateRating = createAsyncThunk(
+  'ratings/updateRating',
+  async (payload: {
+    id: string;
+    rating: string;
+    comment: string;
+  }) => {
+    try {
+      await new Http().default.put(`/ratings/${payload.id}`, {
+        rating: payload.rating,
+        comment: payload.comment,
+      });
+    } catch (error) {
+      const err = error as ResponseError;
+      const message = err.response?.data.message || err.message;
+      throw new Error(message);
+    }
+  },
+);

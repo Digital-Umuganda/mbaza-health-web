@@ -1,5 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { QuestionAnswer } from '@/interfaces/question.answer.type';
+import {
+  IChat,
+  QuestionAnswer,
+} from '@/interfaces/question.answer.type';
 import { ResponseError } from '@/interfaces/error.type';
 import Http from '@/config/http';
 import { Rate } from '@/interfaces/rating.type';
@@ -11,6 +14,24 @@ export const getRandomQuestion = createAsyncThunk(
       const { data } = await new Http().default.get<QuestionAnswer>(
         '/messages/random',
       );
+      return data;
+    } catch (error) {
+      const err = error as ResponseError;
+      const message = err.response?.data.message || err.message;
+      throw new Error(message);
+    }
+  },
+);
+
+export const getRandomChat = createAsyncThunk(
+  'questionAnswer/getRandomChat',
+  async (id: string | null) => {
+    try {
+      let url = '/messages/random';
+      if (id) {
+        url += `?message_id=${id}`;
+      }
+      const { data } = await new Http().default.get<IChat>(url);
       return data;
     } catch (error) {
       const err = error as ResponseError;

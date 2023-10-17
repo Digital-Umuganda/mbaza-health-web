@@ -1,3 +1,5 @@
+import { IRating } from './rating.type';
+
 export interface QuestionAnswer {
   id: string;
   kinyarwanda_question: string;
@@ -10,4 +12,11 @@ export interface QuestionAnswer {
   english_response: string;
   updated_at: string | null;
   chat_id: string;
+}
+
+export interface IChat {
+  id: string;
+  title: string;
+  question_answers: QuestionAnswer[];
+  ratings: IRating[];
 }

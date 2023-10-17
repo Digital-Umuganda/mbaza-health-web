@@ -1,6 +1,12 @@
-export type Rate = 'GOOD' | 'FAIR' | 'BAD' | 'MISLEADING';
+export type Rate =
+  | 'GOOD'
+  | 'FAIR'
+  | 'BAD'
+  | 'MISLEADING'
+  | 'VERY_GOOD';
 
 export const chatRatings: Rate[] = [
+  'VERY_GOOD',
   'GOOD',
   'FAIR',
   'BAD',
@@ -15,10 +21,12 @@ export interface IRating {
   comment?: string | null;
   updated_at: string | null;
   rating: Rate;
+  chat_id: string;
 }
 
 export interface RatingResponse {
   Ratings: IRating;
   kinyarwanda_question: string;
   english_question: string;
+  title: string;
 }

@@ -1,4 +1,6 @@
 import { getRatingTextColor } from '@/helpers/color';
+import { roleToPath } from '@/helpers/isAuth';
+import Secure from '@/helpers/secureLS';
 import { RatingResponse } from '@/interfaces/rating.type';
 import moment from 'moment';
 import { HiEye } from 'react-icons/hi';
@@ -9,6 +11,7 @@ const AccountDetailTableData = ({
 }: {
   data: RatingResponse[];
 }) => {
+  const profile = Secure.getProfile();
   return (
     <>
       {data.map(item => (
@@ -19,19 +22,32 @@ const AccountDetailTableData = ({
           <td className="px-6 py-4">
             {moment(item.Ratings.created_at).format('LL')}
           </td>
-          <td
-            scope="row"
-            className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-          >
-            <span className="block w-full max-w-[320px] truncate">
-              {item.kinyarwanda_question}
-            </span>
-          </td>
-          <td className="px-6 py-4">
-            <span className="block w-full max-w-[320px] truncate">
-              {item.english_question}
-            </span>
-          </td>
+          {!item.title ? (
+            <>
+              <td
+                scope="row"
+                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+              >
+                <span className="block w-full max-w-[320px] truncate">
+                  {item.kinyarwanda_question}
+                </span>
+              </td>
+              <td className="px-6 py-4">
+                <span className="block w-full max-w-[320px] truncate">
+                  {item.english_question}
+                </span>
+              </td>
+            </>
+          ) : (
+            <td
+              scope="row"
+              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+            >
+              <span className="block w-full max-w-[320px] truncate">
+                {item.title}
+              </span>
+            </td>
+          )}
           <td
             className={`px-6 py-4 ${getRatingTextColor(
               item.Ratings.rating,
@@ -46,7 +62,11 @@ const AccountDetailTableData = ({
           </td>
           <td className="px-6 py-4">
             <Link
-              to="#"
+              to={`/${roleToPath(profile?.role as string)}/home?id=${
+                profile?.role === 'LINGUIST'
+                  ? item.Ratings.question_answer_id
+                  : item.Ratings.chat_id
+              }`}
               className="bg-slate-600/10 rounded-lg border p-2 font-medium flex w-fit"
             >
               <HiEye size={24} />
