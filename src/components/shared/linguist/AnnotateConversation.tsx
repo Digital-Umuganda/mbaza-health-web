@@ -78,17 +78,19 @@ const AnnotateConversation = ({ data }: { data: QuestionType }) => {
         <h1 className="text-slate-600 text-xl font-medium font-['Inter'] p-4 border-b border-blue-500/20">
           Help us Annotate this conversation
         </h1>
-        <button
-          type="button"
-          disabled={loading}
-          onClick={onRefresh}
-          className="group disabled:cursor-not-allowed p-2 right-4 top-2 absolute bg-opacity-10 bg-blue-500 rounded-lg border"
-        >
-          <HiOutlineRefresh
-            size={24}
-            className="text-blue-500 group-disabled:text-opacity-25"
-          />
-        </button>
+        {!data.ratings?.length ? (
+          <button
+            type="button"
+            disabled={loading}
+            onClick={onRefresh}
+            className="group disabled:cursor-not-allowed p-2 right-4 top-2 absolute bg-opacity-10 bg-blue-500 rounded-lg border"
+          >
+            <HiOutlineRefresh
+              size={24}
+              className="text-blue-500 group-disabled:text-opacity-25"
+            />
+          </button>
+        ) : null}
 
         <div className="lg:grid lg:grid-cols-2 flex-grow">
           <QuestionAnswer

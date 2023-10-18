@@ -4,6 +4,28 @@
   font-family: 'Inter', sans-serif;
 }
 
+/* Hide scrollbar for Firefox */
+.scrollbar::-webkit-scrollbar {
+  width: 12px;
+}
+
+/* Track */
+.scrollbar::-webkit-scrollbar-track {
+  background: white;
+  border-radius: 10px;
+}
+
+/* Handle */
+.scrollbar::-webkit-scrollbar-thumb {
+  background: rgb(245 158 11 / 0.5);
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgb(245 158 11 / 0.7);
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
