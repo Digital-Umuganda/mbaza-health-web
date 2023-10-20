@@ -15,6 +15,7 @@ export interface User {
   verified_fields: string;
   role: Role;
   created_by: string | null;
+  is_blocked: boolean;
 }
 
 export const allowedRoles: Role[] = [

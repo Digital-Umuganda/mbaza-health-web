@@ -13,7 +13,7 @@ import imigongo from '@/assets/images/imigongo1.svg';
 import LeftBubble from './LeftBubble';
 import RightBubble from './RightBubble';
 import { updateRating } from '@/redux/features/ratings/rating.thunk';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Secure from '@/helpers/secureLS';
 import { roleToPath } from '@/helpers/isAuth';
 
@@ -54,7 +54,9 @@ const AnnotateConversation = ({ data }: { data: IChat }) => {
             messageId: data.id,
           }),
         ).unwrap();
-        toast.success('Annotation successful');
+        toast.success(
+          'The conversation has been annotated successfully.',
+        );
         setAnnotation({
           rating: '' as Rate,
           comment: '',
@@ -148,7 +150,7 @@ const AnnotateConversation = ({ data }: { data: IChat }) => {
         className="md:w-[40%] lg:w-[30%] bg-white rounded-2xl border"
       >
         <h1 className="text-slate-600 text-xl font-medium font-['Inter'] p-4 border-b border-blue-500/20">
-          Rate translation
+          Rate conversation
         </h1>
 
         <div className="p-4 flex flex-col space-y-3">
@@ -218,9 +220,12 @@ const AnnotateConversation = ({ data }: { data: IChat }) => {
             className="uppercase mt-8 w-full disabled:bg-opacity-60 disabled:cursor-not-allowed"
           />
 
-          <p className="text-center mt-6 text-slate-600 text-sm font-bold font-['Inter'] underline">
+          <Link
+            to={`/${roleToPath(profile?.role as string)}/dashboard`}
+            className="block text-center mt-6 text-slate-600 text-sm font-bold font-['Inter'] underline"
+          >
             Annotation History
-          </p>
+          </Link>
         </div>
       </form>
     </div>

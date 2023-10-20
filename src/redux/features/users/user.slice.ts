@@ -33,8 +33,17 @@ const userSlice = createSlice({
     builder.addCase(blockUser.pending, state => {
       state.loading = true;
     });
-    builder.addCase(blockUser.fulfilled, state => {
+    builder.addCase(blockUser.fulfilled, (state, action) => {
       state.loading = false;
+      state.data.data = state.data.data.map(user => {
+        if (user.id === action.payload.user.id) {
+          return {
+            ...user,
+            is_blocked: !user.is_blocked,
+          };
+        }
+        return user;
+      });
     });
     builder.addCase(blockUser.rejected, (state, action) => {
       state.loading = false;

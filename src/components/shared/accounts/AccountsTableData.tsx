@@ -7,6 +7,7 @@ import moment from 'moment';
 import { useState } from 'react';
 import {
   HiBan,
+  HiCheckCircle,
   HiEye,
   HiOutlineExclamationCircle,
 } from 'react-icons/hi';
@@ -21,10 +22,10 @@ const AccountsTableData = ({ data }: { data: User[] }) => {
   const onBlockUser = async () => {
     if (!confirmBlock) return;
     try {
-      const message = await dispatch(
-        blockUser(confirmBlock.id),
+      const results = await dispatch(
+        blockUser(confirmBlock),
       ).unwrap();
-      toast.success(message);
+      toast.success(results.message);
       setConfirmBlock(null);
     } catch (error) {
       const err = error as Error;
@@ -70,10 +71,27 @@ const AccountsTableData = ({ data }: { data: User[] }) => {
               <button
                 type="button"
                 title="Block or unblock user"
-                className="bg-red-600/10 rounded-lg border p-1 font-medium flex w-fit"
+                className={`${
+                  !item.is_blocked
+                    ? 'bg-green-600/10'
+                    : 'bg-red-600/10'
+                } rounded-lg border p-1 space-x-1 font-medium flex w-fit`}
                 onClick={() => setConfirmBlock(item)}
               >
-                <HiBan size={24} className="text-red-500" />
+                {!item.is_blocked ? (
+                  <>
+                    <span className="text-green-500">Active</span>
+                    <HiCheckCircle
+                      size={24}
+                      className="text-green-500"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <span className="text-red-500">Blocked</span>
+                    <HiBan size={24} className="text-red-500" />
+                  </>
+                )}
               </button>
             </p>
           </td>
@@ -91,10 +109,11 @@ const AccountsTableData = ({ data }: { data: User[] }) => {
           <div className="text-center">
             <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
             <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-              Are you sure you want to block or unblock user:{' '}
-              <span className="font-medium text-gray-900">
-                {confirmBlock?.name}
-              </span>
+              Are you sure you want to{' '}
+              <b>{confirmBlock?.is_blocked ? 'activate' : 'block'}</b>{' '}
+              <b>
+                <q>{confirmBlock?.name}</q>
+              </b>
             </h3>
             <div className="flex justify-center gap-4">
               <Button

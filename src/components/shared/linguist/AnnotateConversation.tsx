@@ -12,7 +12,7 @@ import { updateRating } from '@/redux/features/ratings/rating.thunk';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { FormEvent, useEffect, useState } from 'react';
 import { HiOutlineRefresh } from 'react-icons/hi';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const AnnotateConversation = ({ data }: { data: QuestionType }) => {
@@ -49,7 +49,9 @@ const AnnotateConversation = ({ data }: { data: QuestionType }) => {
             messageId: data.id,
           }),
         ).unwrap();
-        toast.success('Annotation successful');
+        toast.success(
+          'The translation has been annotated successfully.',
+        );
         setAnnotation({
           rating: '' as Rate,
           comment: '',
@@ -76,7 +78,7 @@ const AnnotateConversation = ({ data }: { data: QuestionType }) => {
     <div className="gap-4 flex flex-col md:flex-row w-full md:min-h-[80vh]">
       <div className="relative md:w-[60%] lg:w-[70%] bg-white rounded-2xl border flex flex-col">
         <h1 className="text-slate-600 text-xl font-medium font-['Inter'] p-4 border-b border-blue-500/20">
-          Help us Annotate this conversation
+          Help us Annotate this translation
         </h1>
         {!data.ratings?.length ? (
           <button
@@ -177,9 +179,12 @@ const AnnotateConversation = ({ data }: { data: QuestionType }) => {
             className="uppercase mt-8 w-full disabled:bg-opacity-60 disabled:cursor-not-allowed"
           />
 
-          <p className="text-center mt-6 text-slate-600 text-sm font-bold font-['Inter'] underline">
+          <Link
+            to={`/${roleToPath(profile?.role as string)}/dashboard`}
+            className="block text-center mt-6 text-slate-600 text-sm font-bold font-['Inter'] underline"
+          >
             Annotation History
-          </p>
+          </Link>
         </div>
       </form>
     </div>
