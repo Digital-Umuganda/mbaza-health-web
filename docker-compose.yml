@@ -5,6 +5,8 @@ services:
     build: .
     image: front-end
     container_name: front-end
+    ports:
+      - "5000:5000"
     networks:
       - infrastructure_default
 
