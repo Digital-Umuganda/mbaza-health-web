@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /** @type {import('tailwindcss').Config} */
 import defaultTheme from 'tailwindcss/defaultTheme';
 
@@ -22,6 +23,8 @@ export default {
       },
     },
   },
-  // eslint-disable-next-line no-undef
-  plugins: [require('flowbite/plugin')],
+  plugins: [
+    require('flowbite/plugin'),
+    require('@tailwindcss/typography'),
+  ],
 };

@@ -1,5 +1,6 @@
 import verified from '@/assets/images/verified.svg';
 import rbc from '@/assets/images/rbc.svg';
+import CustomMarkdown from '@/components/partials/markdown/CustomMarkdown';
 
 const LeftBubble = ({ message }: { message: string }) => {
   return (
@@ -16,9 +17,9 @@ const LeftBubble = ({ message }: { message: string }) => {
           className="h-[12.13px] w-[12.13px] pointer-events-none"
         />
       </h3>
-      <div
+      <CustomMarkdown
+        markdown={message}
         className="px-3 py-2 text-slate-600 font-['Inter'] leading-normal"
-        dangerouslySetInnerHTML={{ __html: message }}
       />
     </div>
   );
