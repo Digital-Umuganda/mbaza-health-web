@@ -27,6 +27,7 @@ const AccountDetailTableData = ({
               <td
                 scope="row"
                 className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                title={item.kinyarwanda_question}
               >
                 <span className="block w-full max-w-[320px] truncate">
                   {item.kinyarwanda_question}
@@ -42,6 +43,7 @@ const AccountDetailTableData = ({
             <td
               scope="row"
               className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+              title={item.title}
             >
               <span className="block w-full max-w-[320px] truncate">
                 {item.title}
@@ -55,7 +57,10 @@ const AccountDetailTableData = ({
           >
             {item.Ratings.rating}
           </td>
-          <td className="px-6 py-4">
+          <td
+            className="px-6 py-4"
+            title={item.Ratings.comment || '-'}
+          >
             <span className="block w-full max-w-[320px] truncate">
               {item.Ratings.comment || '-'}
             </span>

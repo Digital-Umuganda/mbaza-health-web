@@ -24,6 +24,8 @@ const AppPagination = ({
     value: item.toString(),
     label: item.toString(),
   }));
+
+  if (totalPages < 2) return null;
   return (
     <div className="flex flex-wrap items-center gap-3 justify-end mt-6">
       <Pagination

@@ -18,8 +18,12 @@ import { roleToPath } from '@/helpers/isAuth';
 import Http from '@/config/http';
 import { IStatRating } from '@/interfaces/stat.type';
 import { formatNumber } from '@/helpers/function';
+import { useSearch } from '@/components/hooks/search';
 
 const AccountDetailPage = () => {
+  const [perPage, setPerPage] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
+  const { debouncedSearch, setSearch } = useSearch();
   const { id } = useParams<{ id: string }>();
   const profile = Secure.getProfile();
   const user_id = id ?? profile?.id;
@@ -31,6 +35,7 @@ const AccountDetailPage = () => {
   const dispatch = useAppDispatch();
 
   const [stats, setStats] = useState<IStatRating[]>([]);
+  const [rate, setRate] = useState<Rate>();
 
   const getStats = async () => {
     try {
@@ -61,52 +66,23 @@ const AccountDetailPage = () => {
   };
 
   useEffect(() => {
-    dispatch(getRatings({ user_id }));
-  }, []);
+    dispatch(
+      getRatings({
+        user_id,
+        search: debouncedSearch,
+        currentPage:
+          debouncedSearch.length && data.length < 5 ? 1 : currentPage,
+        itemsPerPage: perPage,
+        rating: rate,
+      }),
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, debouncedSearch, perPage, rate]);
 
   useEffect(() => {
     getStats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const onChangePage = (page: number) => {
-    dispatch(
-      getRatings({
-        user_id,
-        currentPage: page,
-        itemsPerPage: pagination.itemsPerPage,
-      }),
-    );
-  };
-
-  const onChangePerPage = (perPage: number) => {
-    dispatch(
-      getRatings({
-        user_id,
-        itemsPerPage: perPage,
-      }),
-    );
-  };
-
-  const handleSelectRating = (rating: Rate) => {
-    dispatch(
-      getRatings({
-        user_id,
-        rating,
-        itemsPerPage: pagination.itemsPerPage,
-      }),
-    );
-  };
-
-  const handleSearch = (search: string) => {
-    if (loading) return;
-    dispatch(
-      getRatings({
-        user_id,
-        search,
-        itemsPerPage: pagination.itemsPerPage,
-      }),
-    );
-  };
 
   const fullName = useMemo(() => {
     if (state?.fullName) {
@@ -177,9 +153,10 @@ const AccountDetailPage = () => {
             leftIcon={
               <HiSearch size={16} className="text-amber-400" />
             }
+            isLoading={loading}
             className="max-w-[320px]"
             onChange={({ target }) => {
-              handleSearch(target.value);
+              setSearch(target.value);
             }}
           />
           <SelectInput
@@ -202,14 +179,15 @@ const AccountDetailPage = () => {
               })),
             ]}
             onChange={({ target }) => {
-              handleSelectRating(target.value as Rate);
+              setCurrentPage(1);
+              setRate(target.value as Rate);
             }}
           />
         </div>
       </div>
 
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-6">
-        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 whitespace-nowrap">
+        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 whitespace-nowrap min-h-[200px]">
           <thead className="text-xs uppercase bg-blue-500 bg-opacity-10 text-black">
             <tr>
               <th scope="col" className="px-6 py-3">
@@ -258,8 +236,11 @@ const AccountDetailPage = () => {
 
       <AppPagination
         {...pagination}
-        onPageChange={onChangePage}
-        onPerPageChange={onChangePerPage}
+        onPageChange={setCurrentPage}
+        onPerPageChange={num => {
+          setPerPage(num);
+          setCurrentPage(1);
+        }}
       />
     </>
   );

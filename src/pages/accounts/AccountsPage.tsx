@@ -2,16 +2,21 @@ import SelectInput from '@/components/partials/inputs/SelectInput';
 import TextInput from '@/components/partials/inputs/TextInput';
 import DataWidget from '@/components/shared/data/DataWidget';
 import { roleToString } from '@/helpers/isAuth';
-import { allowedRoles } from '@/interfaces/user.type';
+import { Role, allowedRoles } from '@/interfaces/user.type';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { HiOutlineUserCircle, HiSearch } from 'react-icons/hi';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getUsers } from '@/redux/features/users/user.thunk';
 import AccountsTableData from '@/components/shared/accounts/AccountsTableData';
 import AppPagination from '@/components/shared/data/AppPagination';
 import NewAccount from '@/components/shared/accounts/NewAccount';
+import { useSearch } from '@/components/hooks/search';
 
 const AccountsPage = () => {
+  const [role, setRole] = useState<Role>();
+  const [perPage, setPerPage] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
+  const { debouncedSearch, setSearch } = useSearch();
   const {
     data: { data, pagination },
     loading,
@@ -19,44 +24,17 @@ const AccountsPage = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(getUsers({}));
-  }, []);
-
-  const onChangePage = (page: number) => {
     dispatch(
       getUsers({
-        currentPage: page,
-        itemsPerPage: pagination.itemsPerPage,
-      }),
-    );
-  };
-
-  const onChangePerPage = (perPage: number) => {
-    dispatch(
-      getUsers({
+        search: debouncedSearch,
+        currentPage:
+          debouncedSearch.length && data.length < 5 ? 1 : currentPage,
         itemsPerPage: perPage,
-      }),
-    );
-  };
-
-  const handleSelectRole = (role: string) => {
-    dispatch(
-      getUsers({
         role,
-        itemsPerPage: pagination.itemsPerPage,
       }),
     );
-  };
-
-  const handleSearch = (search: string) => {
-    if (loading) return;
-    dispatch(
-      getUsers({
-        search,
-        itemsPerPage: pagination.itemsPerPage,
-      }),
-    );
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, debouncedSearch, perPage, role]);
 
   return (
     <>
@@ -73,9 +51,10 @@ const AccountsPage = () => {
             leftIcon={
               <HiSearch size={16} className="text-amber-400" />
             }
+            isLoading={loading}
             className="max-w-[320px]"
             onChange={({ target }) => {
-              handleSearch(target.value);
+              setSearch(target.value);
             }}
           />
           <SelectInput
@@ -102,7 +81,8 @@ const AccountsPage = () => {
               })),
             ]}
             onChange={({ target }) => {
-              handleSelectRole(target.value);
+              setCurrentPage(1);
+              setRole(target.value as Role);
             }}
           />
 
@@ -111,7 +91,7 @@ const AccountsPage = () => {
       </div>
 
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-6">
-        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 whitespace-nowrap">
+        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 whitespace-nowrap min-h-[200px]">
           <thead className="text-xs uppercase bg-blue-500 bg-opacity-10 text-black">
             <tr>
               <th scope="col" className="px-6 py-3">
@@ -152,8 +132,11 @@ const AccountsPage = () => {
 
       <AppPagination
         {...pagination}
-        onPageChange={onChangePage}
-        onPerPageChange={onChangePerPage}
+        onPageChange={setCurrentPage}
+        onPerPageChange={num => {
+          setPerPage(num);
+          setCurrentPage(1);
+        }}
       />
     </>
   );

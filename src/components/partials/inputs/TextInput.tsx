@@ -1,15 +1,18 @@
+import { Spinner } from 'flowbite-react';
 import { InputHTMLAttributes, useState } from 'react';
 import { HiEye, HiEyeOff } from 'react-icons/hi';
 
 interface TextInputProps
   extends InputHTMLAttributes<HTMLInputElement> {
   leftIcon: React.ReactNode;
+  isLoading?: boolean;
 }
 const TextInput = ({
   className = '',
   placeholder = 'Email',
   leftIcon,
   type = 'text',
+  isLoading = false,
   ...rest
 }: TextInputProps) => {
   const [toggleEye, setToggleEye] = useState(false);
@@ -31,7 +34,9 @@ const TextInput = ({
         }
         className="disabled:bg-gray-100 disabled:cursor-not-allowed px-10 py-3 w-full bg-white rounded-lg border outline-none border-blue-500/30 focus:border-blue-500 placeholder:text-slate-600 placeholder:text-sm font-normal font-['Inter']"
       />
-      <div className="absolute left-4 text-slate-600">{leftIcon}</div>
+      <div className="absolute left-4 text-slate-600">
+        {isLoading ? <Spinner size="xs" /> : leftIcon}
+      </div>
       {type === 'password' && (
         <button
           type="button"

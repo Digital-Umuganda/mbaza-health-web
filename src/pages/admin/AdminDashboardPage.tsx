@@ -133,8 +133,8 @@ const AdminDashboardPage = () => {
         </div>
       </div>
 
-      <div className="flex flex-wrap my-4 gap-x-4 gap-y-3">
-        <div className="w-96 h-48 bg-white rounded-2xl border flex items-stretch divide-x divide-slate-600/10">
+      <div className="flex overflow-x-auto pb-3 gap-x-4 gap-y-3 scrollbar my-4">
+        <div className="shrink-0 w-96 h-48 bg-white rounded-2xl border flex items-stretch divide-x divide-slate-600/10">
           <div className="w-1/2 p-4 py-3 flex flex-col justify-center">
             <p className="text-amber-400 text-5xl font-light font-['Inter']">
               {formatNumber(getTotalLinguist(linguistStatRatings))}
@@ -171,7 +171,7 @@ const AdminDashboardPage = () => {
           </div>
         </div>
 
-        <div className="w-96 h-48 bg-white rounded-2xl border flex items-stretch divide-x divide-slate-600/10">
+        <div className="shrink-0 w-96 h-48 bg-white rounded-2xl border flex items-stretch divide-x divide-slate-600/10">
           <div className="w-1/2 p-4 py-3 flex flex-col justify-center">
             <p className="text-amber-400 text-5xl font-light font-['Inter']">
               {formatNumber(
@@ -210,7 +210,7 @@ const AdminDashboardPage = () => {
           </div>
         </div>
 
-        <div className="w-96 h-48 bg-white rounded-2xl border flex items-stretch divide-x divide-slate-600/10">
+        <div className="shrink-0 w-96 h-48 bg-white rounded-2xl border flex items-stretch divide-x divide-slate-600/10">
           <div className="w-1/2 p-4 py-3 flex flex-col justify-center">
             <p className="text-amber-400 text-5xl font-light font-['Inter']">
               {formatNumber(userStat.totalUsers)}
