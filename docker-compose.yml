@@ -5,6 +5,7 @@ services:
     build: .
     image: front-end
     container_name: front-end
+    restart: unless-stopped
     ports:
       - "5000:5000"
     networks:
