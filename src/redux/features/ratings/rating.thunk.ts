@@ -1,5 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { RatingResponse } from '@/interfaces/rating.type';
+import {
+  IAnnotation,
+  RatingResponse,
+} from '@/interfaces/rating.type';
 import { ResponseError } from '@/interfaces/error.type';
 import Http from '@/config/http';
 import { PaginatedData, Params } from '@/interfaces/pagination';
@@ -36,16 +39,14 @@ export const getRatings = createAsyncThunk(
 
 export const updateRating = createAsyncThunk(
   'ratings/updateRating',
-  async (payload: {
-    id: string;
-    rating: string;
-    comment: string;
-  }) => {
+  async (
+    payload: {
+      id: string;
+    } & IAnnotation,
+  ) => {
     try {
-      await new Http().default.put(`/ratings/${payload.id}`, {
-        rating: payload.rating,
-        comment: payload.comment,
-      });
+      const { id, ...rest } = payload;
+      await new Http().default.put(`/ratings/${id}`, rest);
     } catch (error) {
       const err = error as ResponseError;
       const message = err.response?.data.message || err.message;

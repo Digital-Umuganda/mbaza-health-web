@@ -1,6 +1,6 @@
 import Button from '@/components/partials/buttons/Button';
 import { IChat } from '@/interfaces/question.answer.type';
-import { Rate, chatRatings } from '@/interfaces/rating.type';
+import { IAnnotation } from '@/interfaces/rating.type';
 import {
   annotate,
   getRandomChat,
@@ -16,6 +16,8 @@ import { updateRating } from '@/redux/features/ratings/rating.thunk';
 import { Link, useNavigate } from 'react-router-dom';
 import Secure from '@/helpers/secureLS';
 import { roleToPath } from '@/helpers/isAuth';
+import { RATE_VALUES } from '@/constants/rating';
+import { Label, Radio } from 'flowbite-react';
 
 const AnnotateConversation = ({ data }: { data: IChat }) => {
   const profile = Secure.getProfile();
@@ -23,8 +25,7 @@ const AnnotateConversation = ({ data }: { data: IChat }) => {
   const [currentLanguage, setCurrentLanguage] = useState<'en' | 'rw'>(
     'en',
   );
-  const [annotation, setAnnotation] = useState({
-    rating: '' as Rate,
+  const [annotation, setAnnotation] = useState<IAnnotation>({
     comment: '',
   });
   const { loading } = useAppSelector(state => state.chat);
@@ -58,7 +59,6 @@ const AnnotateConversation = ({ data }: { data: IChat }) => {
           'The conversation has been annotated successfully.',
         );
         setAnnotation({
-          rating: '' as Rate,
           comment: '',
         });
         onRefresh();
@@ -73,8 +73,10 @@ const AnnotateConversation = ({ data }: { data: IChat }) => {
     if (data.ratings?.length) {
       const [first] = data.ratings;
       setAnnotation({
-        rating: first.rating,
         comment: first.comment || '',
+        reponse_helpfulness: first.reponse_helpfulness,
+        response_correctness: first.response_correctness,
+        response_coherence: first.response_coherence,
       });
     }
   }, [data]);
@@ -149,46 +151,98 @@ const AnnotateConversation = ({ data }: { data: IChat }) => {
         onSubmit={handleAnnotation}
         className="md:w-[40%] lg:w-[30%] bg-white rounded-2xl border"
       >
-        <h1 className="text-slate-600 text-xl font-medium font-['Inter'] p-4 border-b border-blue-500/20">
-          Rate conversation
+        <h1 className="text-slate-600 text-base font-medium font-['Inter'] p-4">
+          Rate Question
         </h1>
 
-        <div className="p-4 flex flex-col space-y-3">
-          {chatRatings.map(item => (
-            <button
-              type="button"
-              key={item}
-              onClick={() =>
-                setAnnotation(prev => ({ ...prev, rating: item }))
-              }
-              className={`px-6 py-3 bg-white rounded border flex items-center space-x-4 ${
-                annotation.rating === item
-                  ? 'border-green-500 outline outline-1 outline-green-500'
-                  : 'border-blue-500/20'
-              }`}
-            >
-              <p className="w-6 h-6 relative flex flex-col items-center justify-center">
-                <span
-                  className={`w-6 h-6 left-0 top-0 absolute bg-opacity-25 rounded-full border ${
-                    annotation.rating === item
-                      ? 'bg-green-500'
-                      : 'bg-blue-500 opacity-30'
-                  }`}
-                />
-                <span
-                  className={`w-3 h-3 left-[6px] top-[6px] absolute rounded-full border ${
-                    annotation.rating === item
-                      ? 'border-green-500 bg-green-500'
-                      : 'border-blue-500/20'
-                  }`}
-                />
-              </p>
-              <span>{item}</span>
-            </button>
+        <p className="text-slate-600 text-sm font-['Inter'] px-4">
+          Helpfulness
+        </p>
+        <div className="mt-2 flex items-center flex-wrap gap-x-4 gap-y-3 px-4">
+          {RATE_VALUES.map(item => (
+            <div className="flex items-center" key={item}>
+              <Radio
+                id={`reponse_helpfulness_${item}`}
+                name="reponse_helpfulness"
+                value={item}
+                checked={annotation.reponse_helpfulness === item}
+                onChange={() =>
+                  setAnnotation(prev => ({
+                    ...prev,
+                    reponse_helpfulness: item,
+                  }))
+                }
+                className="checked:bg-yellow-400 checked:ring-yellow-500 focus:ring-yellow-500"
+              />
+              <Label
+                htmlFor={`reponse_helpfulness_${item}`}
+                className="pl-2"
+              >
+                {item}
+              </Label>
+            </div>
           ))}
         </div>
 
-        <div className="px-4 pb-4">
+        <p className="text-slate-600 text-sm font-['Inter'] px-4 mt-3">
+          Correctness
+        </p>
+        <div className="mt-2 flex items-center flex-wrap gap-x-4 gap-y-3 px-4">
+          {RATE_VALUES.map(item => (
+            <div className="flex items-center" key={item}>
+              <Radio
+                id={`response_correctness_${item}`}
+                name="response_correctness"
+                value={item}
+                checked={annotation.response_correctness === item}
+                onChange={() =>
+                  setAnnotation(prev => ({
+                    ...prev,
+                    response_correctness: item,
+                  }))
+                }
+                className="checked:bg-yellow-400 checked:ring-yellow-500 focus:ring-yellow-500"
+              />
+              <Label
+                htmlFor={`response_correctness_${item}`}
+                className="pl-2"
+              >
+                {item}
+              </Label>
+            </div>
+          ))}
+        </div>
+
+        <p className="text-slate-600 text-sm font-['Inter'] px-4 mt-3">
+          Coherence
+        </p>
+        <div className="mt-2 flex items-center flex-wrap gap-x-4 gap-y-3 px-4">
+          {RATE_VALUES.map(item => (
+            <div className="flex items-center" key={item}>
+              <Radio
+                id={`response_coherence_${item}`}
+                name="response_coherence"
+                value={item}
+                checked={annotation.response_coherence === item}
+                onChange={() =>
+                  setAnnotation(prev => ({
+                    ...prev,
+                    response_coherence: item,
+                  }))
+                }
+                className="checked:bg-yellow-400 checked:ring-yellow-500 focus:ring-yellow-500"
+              />
+              <Label
+                htmlFor={`response_coherence_${item}`}
+                className="pl-2"
+              >
+                {item}
+              </Label>
+            </div>
+          ))}
+        </div>
+
+        <div className="px-4 pb-4 mt-6">
           <label
             htmlFor="comment"
             className="text-slate-600 text-base font-medium font-['Inter'] mb-1"
@@ -212,11 +266,7 @@ const AnnotateConversation = ({ data }: { data: IChat }) => {
           <Button
             type="submit"
             label={data.ratings?.length ? 'Update' : 'Submit'}
-            disabled={
-              loading ||
-              !annotation.rating ||
-              !data.question_answers?.length
-            }
+            disabled={loading || Object.keys(annotation).length < 4}
             className="uppercase mt-8 w-full disabled:bg-opacity-60 disabled:cursor-not-allowed"
           />
 

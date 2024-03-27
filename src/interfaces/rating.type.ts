@@ -13,12 +13,11 @@ export const chatRatings: Rate[] = [
   'MISLEADING',
 ];
 
-export interface IRating {
+export interface IRating extends IAnnotation {
   id: string;
   created_at: string;
   user_id: string;
   question_answer_id: string;
-  comment?: string | null;
   updated_at: string | null;
   rating: Rate;
   chat_id: string;
@@ -29,4 +28,16 @@ export interface RatingResponse {
   kinyarwanda_question: string;
   english_question: string;
   title: string;
+}
+
+export interface IAnnotation {
+  comment?: string;
+  question_transation_adequacy?: number;
+  response_transation_adequacy?: number;
+  question_translation_fluency?: number;
+  response_translation_fluency?: number;
+  reponse_helpfulness?: number;
+  response_correctness?: number;
+  response_coherence?: number;
+  audio_mean_opinion_score?: number;
 }

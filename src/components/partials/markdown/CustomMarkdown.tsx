@@ -3,9 +3,12 @@ import remarkGfm from 'remark-gfm';
 
 const CustomMarkdown = ({ markdown = '', className = '' }) => {
   return (
-    <div className={`${className} prose`}>
-      <Markdown remarkPlugins={[remarkGfm]}>{markdown}</Markdown>
-    </div>
+    <Markdown
+      remarkPlugins={[remarkGfm]}
+      className={`${className} prose`}
+    >
+      {markdown.replace(/ ⁇/g, "'")}
+    </Markdown>
   );
 };
 

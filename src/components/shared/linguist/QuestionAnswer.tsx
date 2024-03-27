@@ -2,27 +2,25 @@ import CustomMarkdown from '@/components/partials/markdown/CustomMarkdown';
 
 const QuestionAnswer = ({
   className = '',
-  language = 'Kinyarwanda',
-  question = 'Nigute nafasha umuntu ufite ubumuga bwo kutabona mugihe akeneye amakuru?',
-  answer = 'Menya uburyo bahitamo kwakira amakuru.',
+  type = 'Question',
+  text = 'Nigute nafasha umuntu ufite ubumuga bwo kutabona mugihe akeneye amakuru?',
+  translation = 'Can you help a visually impaired person when they need information?',
 }) => {
   return (
     <div className={`p-4 ${className}`}>
       <p className="mb-8 text-slate-600 text-opacity-60 text-xs font-normal font-['Inter']">
-        {language}
+        {type}
       </p>
-      <div className="text-blue-500 font-['Inter'] flex space-x-2">
+      <div className="text-blue-500 font-['Inter'] flex space-x-2 px-2">
         <span className="text-slate-600 text-opacity-60 font-normal font-['Inter']">
-          Q.
+          {type === 'Question' ? 'K.' : 'E.'}
         </span>
-        <CustomMarkdown markdown={question} />
+        <CustomMarkdown markdown={text} />
       </div>
-      <div className="mt-6 text-slate-600 font-['Inter'] flex space-x-2">
-        <span className="text-slate-600 text-opacity-60 font-normal font-['Inter']">
-          R.
-        </span>
-        <CustomMarkdown markdown={answer} />
-      </div>
+      <CustomMarkdown
+        markdown={translation}
+        className="mt-6 text-[#478CCA] font-['Inter'] bg-[#EAF0F5] prose-headings:text-[#478CCA] rounded-lg p-4"
+      />
     </div>
   );
 };
