@@ -1,4 +1,4 @@
-import { getRatingTextColor } from '@/helpers/color';
+// import { getRatingTextColor } from '@/helpers/color';
 import { roleToPath } from '@/helpers/isAuth';
 import Secure from '@/helpers/secureLS';
 import { RatingResponse } from '@/interfaces/rating.type';
@@ -50,13 +50,13 @@ const AccountDetailTableData = ({
               </span>
             </td>
           )}
-          <td
+          {/* <td
             className={`px-6 py-4 ${getRatingTextColor(
               item.Ratings.rating,
             )}`}
           >
             {item.Ratings.rating}
-          </td>
+          </td> */}
           <td
             className="px-6 py-4"
             title={item.Ratings.comment || '-'}

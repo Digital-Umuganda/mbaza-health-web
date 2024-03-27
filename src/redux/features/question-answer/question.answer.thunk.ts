@@ -5,7 +5,7 @@ import {
 } from '@/interfaces/question.answer.type';
 import { ResponseError } from '@/interfaces/error.type';
 import Http from '@/config/http';
-import { Rate } from '@/interfaces/rating.type';
+import { IAnnotation } from '@/interfaces/rating.type';
 
 export const getRandomQuestion = createAsyncThunk(
   'questionAnswer/getRandomQuestion',
@@ -47,18 +47,16 @@ export const getRandomChat = createAsyncThunk(
 
 export const annotate = createAsyncThunk(
   'questionAnswer/annotate',
-  async (payload: {
-    messageId: string;
-    rating: Rate;
-    comment: string;
-  }) => {
+  async (
+    payload: {
+      messageId: string;
+    } & IAnnotation,
+  ) => {
     try {
+      const { messageId, ...rest } = payload;
       await new Http().default.post(
-        `/messages/${payload.messageId}/ratings`,
-        {
-          rating: payload.rating,
-          comment: payload.comment,
-        },
+        `/messages/${messageId}/ratings`,
+        rest,
       );
     } catch (error) {
       const err = error as ResponseError;

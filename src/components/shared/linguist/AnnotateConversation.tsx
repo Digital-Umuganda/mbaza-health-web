@@ -1,15 +1,17 @@
 import Button from '@/components/partials/buttons/Button';
 import QuestionAnswer from '@/components/shared/linguist/QuestionAnswer';
+import { RATE_VALUES } from '@/constants/rating';
 import { roleToPath } from '@/helpers/isAuth';
 import Secure from '@/helpers/secureLS';
 import { QuestionAnswer as QuestionType } from '@/interfaces/question.answer.type';
-import { Rate, chatRatings } from '@/interfaces/rating.type';
+import { IAnnotation } from '@/interfaces/rating.type';
 import {
   annotate,
   getRandomQuestion,
 } from '@/redux/features/question-answer/question.answer.thunk';
 import { updateRating } from '@/redux/features/ratings/rating.thunk';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
+import { Label, Radio } from 'flowbite-react';
 import { FormEvent, useEffect, useState } from 'react';
 import { HiOutlineRefresh } from 'react-icons/hi';
 import { Link, useNavigate } from 'react-router-dom';
@@ -18,8 +20,7 @@ import { toast } from 'react-toastify';
 const AnnotateConversation = ({ data }: { data: QuestionType }) => {
   const profile = Secure.getProfile();
   const navigate = useNavigate();
-  const [annotation, setAnnotation] = useState({
-    rating: '' as Rate,
+  const [annotation, setAnnotation] = useState<IAnnotation>({
     comment: '',
   });
   const { loading } = useAppSelector(state => state.questionAnswer);
@@ -53,7 +54,6 @@ const AnnotateConversation = ({ data }: { data: QuestionType }) => {
           'The translation has been annotated successfully.',
         );
         setAnnotation({
-          rating: '' as Rate,
           comment: '',
         });
         onRefresh();
@@ -68,8 +68,15 @@ const AnnotateConversation = ({ data }: { data: QuestionType }) => {
     if (data.ratings?.length) {
       const [first] = data.ratings;
       setAnnotation({
-        rating: first.rating,
         comment: first.comment || '',
+        question_transation_adequacy:
+          first.question_transation_adequacy,
+        response_transation_adequacy:
+          first.response_transation_adequacy,
+        question_translation_fluency:
+          first.question_translation_fluency,
+        response_translation_fluency:
+          first.response_translation_fluency,
       });
     }
   }, [data]);
@@ -97,14 +104,14 @@ const AnnotateConversation = ({ data }: { data: QuestionType }) => {
         <div className="lg:grid lg:grid-cols-2 flex-grow">
           <QuestionAnswer
             className="border-b md:border-b-0 md:border-r border-blue-500/20"
-            language="Kinyarwanda"
-            question={data?.kinyarwanda_question}
-            answer={data?.kinyarwanda_response}
+            type="Question"
+            text={data?.kinyarwanda_question}
+            translation={data?.english_question}
           />
           <QuestionAnswer
-            language="English"
-            answer={data?.english_response}
-            question={data?.english_question}
+            type="Answer"
+            text={data?.kinyarwanda_response}
+            translation={data?.english_response}
           />
         </div>
       </div>
@@ -112,46 +119,140 @@ const AnnotateConversation = ({ data }: { data: QuestionType }) => {
         onSubmit={handleAnnotation}
         className="md:w-[40%] lg:w-[30%] bg-white rounded-2xl border"
       >
-        <h1 className="text-slate-600 text-xl font-medium font-['Inter'] p-4 border-b border-blue-500/20">
-          Rate translation
+        <h1 className="text-slate-600 text-base font-medium font-['Inter'] p-4">
+          Rate Question
         </h1>
 
-        <div className="p-4 flex flex-col space-y-3">
-          {chatRatings.map(item => (
-            <button
-              type="button"
-              key={item}
-              onClick={() =>
-                setAnnotation(prev => ({ ...prev, rating: item }))
-              }
-              className={`px-6 py-3 bg-white rounded border flex items-center space-x-4 ${
-                annotation.rating === item
-                  ? 'border-green-500 outline outline-1 outline-green-500'
-                  : 'border-blue-500/20'
-              }`}
-            >
-              <p className="w-6 h-6 relative flex flex-col items-center justify-center">
-                <span
-                  className={`w-6 h-6 left-0 top-0 absolute bg-opacity-25 rounded-full border ${
-                    annotation.rating === item
-                      ? 'bg-green-500'
-                      : 'bg-blue-500 opacity-30'
-                  }`}
-                />
-                <span
-                  className={`w-3 h-3 left-[6px] top-[6px] absolute rounded-full border ${
-                    annotation.rating === item
-                      ? 'border-green-500 bg-green-500'
-                      : 'border-blue-500/20'
-                  }`}
-                />
-              </p>
-              <span>{item}</span>
-            </button>
+        <p className="text-slate-600 text-sm font-['Inter'] px-4">
+          Adequacy
+        </p>
+        <div className="mt-2 flex items-center flex-wrap gap-x-4 gap-y-3 px-4">
+          {RATE_VALUES.map(item => (
+            <div className="flex items-center" key={item}>
+              <Radio
+                id={`question_transation_adequacy_${item}`}
+                name="question_transation_adequacy"
+                value={item}
+                checked={
+                  annotation.question_transation_adequacy === item
+                }
+                onChange={() =>
+                  setAnnotation(prev => ({
+                    ...prev,
+                    question_transation_adequacy: item,
+                  }))
+                }
+                className="checked:bg-yellow-400 checked:ring-yellow-500 focus:ring-yellow-500"
+              />
+              <Label
+                htmlFor={`question_transation_adequacy_${item}`}
+                className="pl-2"
+              >
+                {item}
+              </Label>
+            </div>
           ))}
         </div>
 
-        <div className="px-4 pb-4">
+        <p className="text-slate-600 text-sm font-['Inter'] px-4 mt-3">
+          Fluency
+        </p>
+        <div className="mt-2 flex items-center flex-wrap gap-x-4 gap-y-3 px-4">
+          {RATE_VALUES.map(item => (
+            <div className="flex items-center" key={item}>
+              <Radio
+                id={`question_translation_fluency_${item}`}
+                name="question_translation_fluency"
+                value={item}
+                checked={
+                  annotation.question_translation_fluency === item
+                }
+                onChange={() =>
+                  setAnnotation(prev => ({
+                    ...prev,
+                    question_translation_fluency: item,
+                  }))
+                }
+                className="checked:bg-yellow-400 checked:ring-yellow-500 focus:ring-yellow-500"
+              />
+              <Label
+                htmlFor={`question_translation_fluency_${item}`}
+                className="pl-2"
+              >
+                {item}
+              </Label>
+            </div>
+          ))}
+        </div>
+
+        {/* Answer */}
+        <h1 className="text-slate-600 text-base font-medium font-['Inter'] p-4 mt-2">
+          Rate Answer
+        </h1>
+
+        <p className="text-slate-600 text-sm font-['Inter'] px-4">
+          Adequacy
+        </p>
+        <div className="mt-2 flex items-center flex-wrap gap-x-4 gap-y-3 px-4">
+          {RATE_VALUES.map(item => (
+            <div className="flex items-center" key={item}>
+              <Radio
+                id={`response_transation_adequacy_${item}`}
+                name="response_transation_adequacy"
+                value={item}
+                checked={
+                  annotation.response_transation_adequacy === item
+                }
+                onChange={() =>
+                  setAnnotation(prev => ({
+                    ...prev,
+                    response_transation_adequacy: item,
+                  }))
+                }
+                className="checked:bg-yellow-400 checked:ring-yellow-500 focus:ring-yellow-500"
+              />
+              <Label
+                htmlFor={`response_transation_adequacy_${item}`}
+                className="pl-2"
+              >
+                {item}
+              </Label>
+            </div>
+          ))}
+        </div>
+
+        <p className="text-slate-600 text-sm font-['Inter'] px-4 mt-3">
+          Fluency
+        </p>
+        <div className="mt-2 flex items-center flex-wrap gap-x-4 gap-y-3 px-4">
+          {RATE_VALUES.map(item => (
+            <div className="flex items-center" key={item}>
+              <Radio
+                id={`response_translation_fluency_${item}`}
+                name="response_translation_fluency"
+                value={item}
+                checked={
+                  annotation.response_translation_fluency === item
+                }
+                onChange={() =>
+                  setAnnotation(prev => ({
+                    ...prev,
+                    response_translation_fluency: item,
+                  }))
+                }
+                className="checked:bg-yellow-400 checked:ring-yellow-500 focus:ring-yellow-500"
+              />
+              <Label
+                htmlFor={`response_translation_fluency_${item}`}
+                className="pl-2"
+              >
+                {item}
+              </Label>
+            </div>
+          ))}
+        </div>
+
+        <div className="px-4 pb-4 mt-6">
           <label
             htmlFor="comment"
             className="text-slate-600 text-base font-medium font-['Inter'] mb-1"
@@ -175,7 +276,7 @@ const AnnotateConversation = ({ data }: { data: QuestionType }) => {
           <Button
             type="submit"
             label={data.ratings?.length ? 'Update' : 'Submit'}
-            disabled={loading || !annotation.rating}
+            disabled={loading || Object.keys(annotation).length < 5}
             className="uppercase mt-8 w-full disabled:bg-opacity-60 disabled:cursor-not-allowed"
           />
 

@@ -207,9 +207,9 @@ const AccountDetailPage = () => {
                   Conversation
                 </th>
               )}
-              <th scope="col" className="px-6 py-3">
+              {/* <th scope="col" className="px-6 py-3">
                 Rating
-              </th>
+              </th> */}
               <th scope="col" className="px-6 py-3">
                 Comment
               </th>
