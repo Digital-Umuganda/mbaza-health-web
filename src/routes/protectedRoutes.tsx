@@ -8,6 +8,7 @@ import AccountDetailPage from '@/pages/accounts/AccountDetailPage';
 import LinguistRoute from './LinguistRoute';
 import LinguistHomePage from '@/pages/linguist/LinguistHomePage';
 import HealthWorkerHomePage from '@/pages/health-worker/HealthWorkerHomePage';
+import VoiceAnnotatorHomePage from '@/pages/voice-annotator/VoiceAnnotatorHomePage';
 
 export const protectedRoutes = (
   role = Secure.getProfile()?.role,
@@ -64,6 +65,22 @@ export const protectedRoutes = (
           {
             path: 'home',
             element: <HealthWorkerHomePage />,
+          },
+          {
+            path: 'dashboard',
+            element: <AccountDetailPage />,
+          },
+        ],
+      };
+    case 'VOICE_ANNOTATOR':
+      return {
+        path: '/voice-annotator',
+        element: <LinguistRoute />,
+        children: [
+          ...commonRoutes,
+          {
+            path: 'home',
+            element: <VoiceAnnotatorHomePage />,
           },
           {
             path: 'dashboard',

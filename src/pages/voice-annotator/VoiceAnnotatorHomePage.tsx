@@ -1,11 +1,11 @@
 import DataWidget from '@/components/shared/data/DataWidget';
-import AnnotateConversation from '@/components/shared/linguist/AnnotateConversation';
+import VoiceAnnotateConversation from '@/components/shared/voice-annotator/AnnotateConversation';
 import { getRandomQuestion } from '@/redux/features/question-answer/question.answer.thunk';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-const LinguistHomePage = () => {
+const VoiceAnnotatorHomePage = () => {
   const { data, loading } = useAppSelector(
     state => state.questionAnswer,
   );
@@ -22,7 +22,7 @@ const LinguistHomePage = () => {
     <>
       <DataWidget isLoading={loading && !data?.id}>
         {data ? (
-          <AnnotateConversation data={data} />
+          <VoiceAnnotateConversation data={data} />
         ) : (
           <p className="text-center text-xl font-medium">
             No data to display
@@ -33,4 +33,4 @@ const LinguistHomePage = () => {
   );
 };
 
-export default LinguistHomePage;
+export default VoiceAnnotatorHomePage;

@@ -2,7 +2,8 @@ export type Role =
   | 'ADMIN'
   | 'USER'
   | 'LINGUIST'
-  | 'PROFESSIONAL_HEALTH_WORKER';
+  | 'PROFESSIONAL_HEALTH_WORKER'
+  | 'VOICE_ANNOTATOR';
 
 export interface User {
   email: string;
@@ -22,4 +23,5 @@ export const allowedRoles: Role[] = [
   'ADMIN',
   'LINGUIST',
   'PROFESSIONAL_HEALTH_WORKER',
+  'VOICE_ANNOTATOR',
 ];

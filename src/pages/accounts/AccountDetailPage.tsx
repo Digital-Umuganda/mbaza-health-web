@@ -12,12 +12,9 @@ import { getRatings } from '@/redux/features/ratings/rating.thunk';
 import AppPagination from '@/components/shared/data/AppPagination';
 import AccountDetailTableData from '@/components/shared/accounts/AccountDetailTableData';
 import { Link, useLocation, useParams } from 'react-router-dom';
-import { Rate, chatRatings } from '@/interfaces/rating.type';
+import { Rate } from '@/interfaces/rating.type';
 import Secure from '@/helpers/secureLS';
 import { roleToPath } from '@/helpers/isAuth';
-import Http from '@/config/http';
-import { IStatRating } from '@/interfaces/stat.type';
-import { formatNumber } from '@/helpers/function';
 import { useSearch } from '@/components/hooks/search';
 
 const AccountDetailPage = () => {
@@ -34,36 +31,7 @@ const AccountDetailPage = () => {
   } = useAppSelector(state => state.rating);
   const dispatch = useAppDispatch();
 
-  const [stats, setStats] = useState<IStatRating[]>([]);
   const [rate, setRate] = useState<Rate>();
-
-  const getStats = async () => {
-    try {
-      const statRequests = ['', ...chatRatings].map(rating => {
-        let url = '/ratings/stats';
-        if (rating.length) {
-          url += `?rating=${rating}`;
-        }
-        return new Http().default.get<Omit<IStatRating, 'title'>>(
-          url,
-        );
-      });
-      const linguistStats = await Promise.all(statRequests);
-      setStats(
-        [
-          profile?.role === 'LINGUIST'
-            ? 'Translations Reviewed'
-            : 'Conversations Reviewed',
-          ...chatRatings,
-        ].map((rating, index) => ({
-          title: rating,
-          ...linguistStats[index].data,
-        })),
-      );
-    } catch (error) {
-      // TODO: Handle error
-    }
-  };
 
   useEffect(() => {
     dispatch(
@@ -79,11 +47,6 @@ const AccountDetailPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, debouncedSearch, perPage, rate]);
 
-  useEffect(() => {
-    getStats();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const fullName = useMemo(() => {
     if (state?.fullName) {
       return state.fullName;
@@ -96,41 +59,6 @@ const AccountDetailPage = () => {
 
   return (
     <>
-      <div className="flex overflow-x-auto pb-3 gap-x-4 gap-y-3 scrollbar">
-        {stats.map(stat => (
-          <div className="w-64 shrink-0 min-h-[128px] bg-white rounded-2xl border flex items-stretch divide-x divide-slate-600/10">
-            <div className="w-1/2 p-4 py-3 flex flex-col justify-center">
-              <p className="text-amber-400 text-5xl font-light font-['Inter']">
-                {formatNumber(stat.today + stat.week + stat.month)}
-              </p>
-              <p className="mt-4 text-slate-600 text-sm font-medium font-['Inter']">
-                {stat.title}
-              </p>
-            </div>
-
-            <div className="w-1/2 p-4 py-3 flex flex-col justify-center">
-              <p className="text-slate-600 text-opacity-60 text-sm mt-1 font-['Inter']">
-                <span className="text-slate-600 text-opacity-100 font-semibold">
-                  {stat.today}
-                </span>{' '}
-                Today
-              </p>
-              <p className="text-slate-600 text-opacity-60 text-sm mt-1 font-['Inter']">
-                <span className="text-slate-600 text-opacity-100 font-semibold">
-                  {stat.week}
-                </span>{' '}
-                This Week
-              </p>
-              <p className="text-slate-600 text-opacity-60 text-sm mt-1 font-['Inter']">
-                <span className="text-slate-600 text-opacity-100 font-semibold">
-                  {stat.month}
-                </span>{' '}
-                This Month
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
       <div className="mt-4 w-full py-4 px-8 bg-white rounded-2xl border flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center space-x-3">
           {profile?.role === 'ADMIN' && (
@@ -173,10 +101,6 @@ const AccountDetailPage = () => {
                 value: '',
                 label: 'All ratings',
               },
-              ...chatRatings.map(item => ({
-                value: item,
-                label: item,
-              })),
             ]}
             onChange={({ target }) => {
               setCurrentPage(1);
