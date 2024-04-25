@@ -74,7 +74,7 @@ const AnnotateConversation = ({ data }: { data: IChat }) => {
       const [first] = data.ratings;
       setAnnotation({
         comment: first.comment || '',
-        reponse_helpfulness: first.reponse_helpfulness,
+        response_helpfulness: first.response_helpfulness,
         response_correctness: first.response_correctness,
         response_coherence: first.response_coherence,
       });
@@ -85,7 +85,7 @@ const AnnotateConversation = ({ data }: { data: IChat }) => {
     <div className="gap-4 flex flex-col md:flex-row w-full md:min-h-[80vh]">
       <div className="relative md:w-[60%] lg:w-[70%] bg-white rounded-2xl border flex flex-col">
         <h1 className="text-slate-600 text-xl font-medium font-['Inter'] p-4 border-b border-blue-500/20">
-          Help us Annotate this conversation
+          Annotate this conversation
         </h1>
         {!data.ratings?.length ? (
           <button
@@ -152,7 +152,7 @@ const AnnotateConversation = ({ data }: { data: IChat }) => {
         className="md:w-[40%] lg:w-[30%] bg-white rounded-2xl border"
       >
         <h1 className="text-slate-600 text-base font-medium font-['Inter'] p-4">
-          Rate Question
+          Rate Response
         </h1>
 
         <p className="text-slate-600 text-sm font-['Inter'] px-4">
@@ -162,20 +162,20 @@ const AnnotateConversation = ({ data }: { data: IChat }) => {
           {RATE_VALUES.map(item => (
             <div className="flex items-center" key={item}>
               <Radio
-                id={`reponse_helpfulness_${item}`}
-                name="reponse_helpfulness"
+                id={`response_helpfulness_${item}`}
+                name="response_helpfulness"
                 value={item}
-                checked={annotation.reponse_helpfulness === item}
+                checked={annotation.response_helpfulness === item}
                 onChange={() =>
                   setAnnotation(prev => ({
                     ...prev,
-                    reponse_helpfulness: item,
+                    response_helpfulness: item,
                   }))
                 }
                 className="checked:bg-yellow-400 checked:ring-yellow-500 focus:ring-yellow-500"
               />
               <Label
-                htmlFor={`reponse_helpfulness_${item}`}
+                htmlFor={`response_helpfulness_${item}`}
                 className="pl-2"
               >
                 {item}
@@ -266,7 +266,11 @@ const AnnotateConversation = ({ data }: { data: IChat }) => {
           <Button
             type="submit"
             label={data.ratings?.length ? 'Update' : 'Submit'}
-            disabled={loading || Object.keys(annotation).length < 4}
+            disabled={
+              loading ||
+              !data.question_answers?.length ||
+              Object.keys(annotation).length < 4
+            }
             className="uppercase mt-8 w-full disabled:bg-opacity-60 disabled:cursor-not-allowed"
           />
 

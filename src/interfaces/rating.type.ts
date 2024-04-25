@@ -36,8 +36,9 @@ export interface IAnnotation {
   response_transation_adequacy?: number;
   question_translation_fluency?: number;
   response_translation_fluency?: number;
-  reponse_helpfulness?: number;
+  response_helpfulness?: number;
   response_correctness?: number;
   response_coherence?: number;
-  audio_mean_opinion_score?: number;
+  question_audio_mean_opinion_score?: number;
+  response_audio_mean_opinion_score?: number;
 }

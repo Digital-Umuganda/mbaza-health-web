@@ -68,9 +68,9 @@ const AccountDetailTableData = ({
           <td className="px-6 py-4">
             <Link
               to={`/${roleToPath(profile?.role as string)}/home?id=${
-                profile?.role === 'LINGUIST'
-                  ? item.Ratings.question_answer_id
-                  : item.Ratings.chat_id
+                profile?.role === 'PROFESSIONAL_HEALTH_WORKER'
+                  ? item.Ratings.chat_id
+                  : item.Ratings.question_answer_id
               }`}
               className="bg-slate-600/10 rounded-lg border p-2 font-medium flex w-fit"
             >

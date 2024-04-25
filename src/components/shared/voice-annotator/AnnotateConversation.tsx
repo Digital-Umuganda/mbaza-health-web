@@ -1,29 +1,33 @@
 import Button from '@/components/partials/buttons/Button';
-import QuestionAnswer from '@/components/shared/linguist/QuestionAnswer';
-import { RATE_VALUES } from '@/constants/rating';
-import { roleToPath } from '@/helpers/isAuth';
-import Secure from '@/helpers/secureLS';
 import { QuestionAnswer as QuestionType } from '@/interfaces/question.answer.type';
 import { IAnnotation } from '@/interfaces/rating.type';
 import {
   annotate,
   getRandomQuestion,
 } from '@/redux/features/question-answer/question.answer.thunk';
-import { updateRating } from '@/redux/features/ratings/rating.thunk';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
-import { Label, Radio } from 'flowbite-react';
 import { FormEvent, useEffect, useState } from 'react';
 import { HiOutlineRefresh } from 'react-icons/hi';
-import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { updateRating } from '@/redux/features/ratings/rating.thunk';
+import { Link, useNavigate } from 'react-router-dom';
+import Secure from '@/helpers/secureLS';
+import { roleToPath } from '@/helpers/isAuth';
+import { RATE_VALUES } from '@/constants/rating';
+import { Label, Radio } from 'flowbite-react';
+import QuestionAnswer from './QuestionAnswer';
 
-const AnnotateConversation = ({ data }: { data: QuestionType }) => {
+const VoiceAnnotateConversation = ({
+  data,
+}: {
+  data: QuestionType;
+}) => {
   const profile = Secure.getProfile();
   const navigate = useNavigate();
   const [annotation, setAnnotation] = useState<IAnnotation>({
     comment: '',
   });
-  const { loading } = useAppSelector(state => state.questionAnswer);
+  const { loading } = useAppSelector(state => state.chat);
   const dispatch = useAppDispatch();
   const onRefresh = () => {
     dispatch(getRandomQuestion(null));
@@ -50,9 +54,7 @@ const AnnotateConversation = ({ data }: { data: QuestionType }) => {
             messageId: data.id,
           }),
         ).unwrap();
-        toast.success(
-          'The translation has been annotated successfully.',
-        );
+        toast.success('The message has been annotated successfully.');
         setAnnotation({
           comment: '',
         });
@@ -69,14 +71,10 @@ const AnnotateConversation = ({ data }: { data: QuestionType }) => {
       const [first] = data.ratings;
       setAnnotation({
         comment: first.comment || '',
-        question_transation_adequacy:
-          first.question_transation_adequacy,
-        response_transation_adequacy:
-          first.response_transation_adequacy,
-        question_translation_fluency:
-          first.question_translation_fluency,
-        response_translation_fluency:
-          first.response_translation_fluency,
+        question_audio_mean_opinion_score:
+          first.question_audio_mean_opinion_score,
+        response_audio_mean_opinion_score:
+          first.response_audio_mean_opinion_score,
       });
     }
   }, [data]);
@@ -85,7 +83,7 @@ const AnnotateConversation = ({ data }: { data: QuestionType }) => {
     <div className="gap-4 flex flex-col md:flex-row w-full md:min-h-[80vh]">
       <div className="relative md:w-[60%] lg:w-[70%] bg-white rounded-2xl border flex flex-col">
         <h1 className="text-slate-600 text-xl font-medium font-['Inter'] p-4 border-b border-blue-500/20">
-          Annotate this translation
+          Annotate this conversation
         </h1>
         {!data.ratings?.length ? (
           <button
@@ -106,12 +104,12 @@ const AnnotateConversation = ({ data }: { data: QuestionType }) => {
             className="border-b md:border-b-0 md:border-r border-blue-500/20"
             type="Question"
             text={data?.kinyarwanda_question}
-            translation={data?.english_question}
+            audio={data?.audio_question}
           />
           <QuestionAnswer
             type="Answer"
             text={data?.kinyarwanda_response}
-            translation={data?.english_response}
+            audio={data?.audio_responses?.[0]}
           />
         </div>
       </div>
@@ -124,59 +122,29 @@ const AnnotateConversation = ({ data }: { data: QuestionType }) => {
         </h1>
 
         <p className="text-slate-600 text-sm font-['Inter'] px-4">
-          Adequacy
+          Mean Opinion Score
         </p>
         <div className="mt-2 flex items-center flex-wrap gap-x-4 gap-y-3 px-4">
           {RATE_VALUES.map(item => (
             <div className="flex items-center" key={item}>
               <Radio
-                id={`question_transation_adequacy_${item}`}
-                name="question_transation_adequacy"
+                id={`question_audio_mean_opinion_score_${item}`}
+                name="question_audio_mean_opinion_score"
                 value={item}
                 checked={
-                  annotation.question_transation_adequacy === item
+                  annotation.question_audio_mean_opinion_score ===
+                  item
                 }
                 onChange={() =>
                   setAnnotation(prev => ({
                     ...prev,
-                    question_transation_adequacy: item,
+                    question_audio_mean_opinion_score: item,
                   }))
                 }
                 className="checked:bg-yellow-400 checked:ring-yellow-500 focus:ring-yellow-500"
               />
               <Label
-                htmlFor={`question_transation_adequacy_${item}`}
-                className="pl-2"
-              >
-                {item}
-              </Label>
-            </div>
-          ))}
-        </div>
-
-        <p className="text-slate-600 text-sm font-['Inter'] px-4 mt-3">
-          Fluency
-        </p>
-        <div className="mt-2 flex items-center flex-wrap gap-x-4 gap-y-3 px-4">
-          {RATE_VALUES.map(item => (
-            <div className="flex items-center" key={item}>
-              <Radio
-                id={`question_translation_fluency_${item}`}
-                name="question_translation_fluency"
-                value={item}
-                checked={
-                  annotation.question_translation_fluency === item
-                }
-                onChange={() =>
-                  setAnnotation(prev => ({
-                    ...prev,
-                    question_translation_fluency: item,
-                  }))
-                }
-                className="checked:bg-yellow-400 checked:ring-yellow-500 focus:ring-yellow-500"
-              />
-              <Label
-                htmlFor={`question_translation_fluency_${item}`}
+                htmlFor={`question_audio_mean_opinion_score_${item}`}
                 className="pl-2"
               >
                 {item}
@@ -191,59 +159,30 @@ const AnnotateConversation = ({ data }: { data: QuestionType }) => {
         </h1>
 
         <p className="text-slate-600 text-sm font-['Inter'] px-4">
-          Adequacy
+          Mean Opinion Score
         </p>
-        <div className="mt-2 flex items-center flex-wrap gap-x-4 gap-y-3 px-4">
-          {RATE_VALUES.map(item => (
-            <div className="flex items-center" key={item}>
-              <Radio
-                id={`response_transation_adequacy_${item}`}
-                name="response_transation_adequacy"
-                value={item}
-                checked={
-                  annotation.response_transation_adequacy === item
-                }
-                onChange={() =>
-                  setAnnotation(prev => ({
-                    ...prev,
-                    response_transation_adequacy: item,
-                  }))
-                }
-                className="checked:bg-yellow-400 checked:ring-yellow-500 focus:ring-yellow-500"
-              />
-              <Label
-                htmlFor={`response_transation_adequacy_${item}`}
-                className="pl-2"
-              >
-                {item}
-              </Label>
-            </div>
-          ))}
-        </div>
 
-        <p className="text-slate-600 text-sm font-['Inter'] px-4 mt-3">
-          Fluency
-        </p>
         <div className="mt-2 flex items-center flex-wrap gap-x-4 gap-y-3 px-4">
           {RATE_VALUES.map(item => (
             <div className="flex items-center" key={item}>
               <Radio
-                id={`response_translation_fluency_${item}`}
-                name="response_translation_fluency"
+                id={`response_audio_mean_opinion_score_${item}`}
+                name="response_audio_mean_opinion_score"
                 value={item}
                 checked={
-                  annotation.response_translation_fluency === item
+                  annotation.response_audio_mean_opinion_score ===
+                  item
                 }
                 onChange={() =>
                   setAnnotation(prev => ({
                     ...prev,
-                    response_translation_fluency: item,
+                    response_audio_mean_opinion_score: item,
                   }))
                 }
                 className="checked:bg-yellow-400 checked:ring-yellow-500 focus:ring-yellow-500"
               />
               <Label
-                htmlFor={`response_translation_fluency_${item}`}
+                htmlFor={`response_audio_mean_opinion_score_${item}`}
                 className="pl-2"
               >
                 {item}
@@ -276,7 +215,7 @@ const AnnotateConversation = ({ data }: { data: QuestionType }) => {
           <Button
             type="submit"
             label={data.ratings?.length ? 'Update' : 'Submit'}
-            disabled={loading || Object.keys(annotation).length < 5}
+            disabled={loading || Object.keys(annotation).length < 3}
             className="uppercase mt-8 w-full disabled:bg-opacity-60 disabled:cursor-not-allowed"
           />
 
@@ -292,4 +231,4 @@ const AnnotateConversation = ({ data }: { data: QuestionType }) => {
   );
 };
 
-export default AnnotateConversation;
+export default VoiceAnnotateConversation;

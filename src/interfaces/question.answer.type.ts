@@ -13,6 +13,8 @@ export interface QuestionAnswer {
   updated_at: string | null;
   chat_id: string;
   ratings: IRating[];
+  audio_responses?: string[];
+  audio_question?: string;
 }
 
 export interface IChat {
