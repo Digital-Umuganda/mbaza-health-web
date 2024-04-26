@@ -22,13 +22,16 @@ const QuestionAnswer = ({
 
       {type === 'Question' && audio && (
         <div className="px-2 mt-4">
+          <p className="my-4 text-blue-500 font-normal font-['Inter']">
+            Voice
+          </p>
           <audio
             controls
             src={`${BASE_AUDIO_URL}/${audio}`}
             className="w-full"
           />
           <p className="text-blue-500 font-normal font-['Inter'] mt-4">
-            Translation
+            Text
           </p>
         </div>
       )}
@@ -47,6 +50,9 @@ const QuestionAnswer = ({
           ) : (
             <p className="text-slate-400">No audio response</p>
           )}
+          <p className="mt-4 text-blue-500 font-normal font-['Inter']">
+            Text
+          </p>
         </div>
       )}
 
