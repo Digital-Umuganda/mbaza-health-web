@@ -156,10 +156,14 @@ const VoiceAnnotateConversation = ({
               type="Question"
               text={data?.kinyarwanda_question}
               audio={data?.audio_question}
-              onBetterTranslation={() => {
-                setOpenModal(BetterResponse.BETTER_QUESTION);
-                setTranslation('');
-              }}
+              onBetterTranslation={
+                data?.audio_question
+                  ? () => {
+                      setOpenModal(BetterResponse.BETTER_QUESTION);
+                      setTranslation('');
+                    }
+                  : undefined
+              }
             />
             <QuestionAnswer
               type="Answer"
