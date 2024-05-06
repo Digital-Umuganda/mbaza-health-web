@@ -17,13 +17,11 @@ import { RATE_VALUES } from '@/constants/rating';
 import { Label, Modal, Radio, Textarea } from 'flowbite-react';
 import QuestionAnswer from './QuestionAnswer';
 import { provideBetterResponse } from '@/redux/features/better-response/better-response.thunk';
-import { IBetterResponse } from '@/interfaces/better-response';
+import {
+  BetterResponse,
+  IBetterResponse,
+} from '@/interfaces/better-response';
 import { updateRandomQuestion } from '@/redux/features/question-answer/question.answer.slice';
-
-enum BetterResponse {
-  BETTER_QUESTION = 'BETTER_QUESTION',
-  BETTER_ANSWER = 'BETTER_ANSWER',
-}
 
 const VoiceAnnotateConversation = ({
   data,
@@ -307,11 +305,7 @@ const VoiceAnnotateConversation = ({
         }}
         size="7xl"
       >
-        <Modal.Header>
-          {openModal === BetterResponse.BETTER_QUESTION
-            ? 'Better Question'
-            : 'Better Answer'}
-        </Modal.Header>
+        <Modal.Header>Better Translation</Modal.Header>
         <Modal.Body>
           <div className="flex h-full">
             <div className="flex flex-col w-1/2">
