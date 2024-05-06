@@ -6,6 +6,7 @@ interface QuestionAnswerProps {
   type?: 'Question' | 'Answer';
   text?: string;
   audio?: string;
+  onBetterTranslation?: () => void;
 }
 
 const QuestionAnswer = ({
@@ -13,6 +14,7 @@ const QuestionAnswer = ({
   type = 'Question',
   text = 'Nigute nafasha umuntu ufite ubumuga bwo kutabona mugihe akeneye amakuru?',
   audio,
+  onBetterTranslation,
 }: QuestionAnswerProps) => {
   return (
     <div className={`p-4 ${className}`}>
@@ -56,8 +58,18 @@ const QuestionAnswer = ({
         </div>
       )}
 
-      <div className="mt-2 font-['Inter'] flex space-x-2 px-2">
+      <div className="mt-2 font-['Inter'] flex flex-col gap-y-2 px-2">
         <CustomMarkdown markdown={text} />
+
+        {onBetterTranslation && (
+          <button
+            type="button"
+            className="mt-3 text-[#4CD964] hover:text-green-500 mr-auto"
+            onClick={onBetterTranslation}
+          >
+            Provide better translation (Optional)
+          </button>
+        )}
       </div>
     </div>
   );

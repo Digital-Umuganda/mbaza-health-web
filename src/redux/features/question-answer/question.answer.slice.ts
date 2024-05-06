@@ -6,7 +6,11 @@ import { getRandomQuestion, annotate } from './question.answer.thunk';
 const questionAnswerSlice = createSlice({
   name: 'questionAnswer',
   initialState: initialState<QuestionAnswer>(),
-  reducers: {},
+  reducers: {
+    updateRandomQuestion: (state, action) => {
+      state.data = action.payload;
+    },
+  },
   extraReducers: builder => {
     builder.addCase(getRandomQuestion.pending, state => {
       state.loading = true;
@@ -31,5 +35,7 @@ const questionAnswerSlice = createSlice({
     });
   },
 });
+
+export const { updateRandomQuestion } = questionAnswerSlice.actions;
 
 export default questionAnswerSlice.reducer;
