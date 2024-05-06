@@ -117,41 +117,45 @@ const VoiceAnnotateConversation = ({
         onSubmit={handleAnnotation}
         className="md:w-[40%] lg:w-[30%] bg-white rounded-2xl border"
       >
-        <h1 className="text-slate-600 text-base font-medium font-['Inter'] p-4">
-          Rate Question
-        </h1>
+        {data?.audio_question && (
+          <>
+            <h1 className="text-slate-600 text-base font-medium font-['Inter'] p-4">
+              Rate Question
+            </h1>
 
-        <p className="text-slate-600 text-sm font-['Inter'] px-4">
-          Mean Opinion Score
-        </p>
-        <div className="mt-2 flex items-center flex-wrap gap-x-4 gap-y-3 px-4">
-          {RATE_VALUES.map(item => (
-            <div className="flex items-center" key={item}>
-              <Radio
-                id={`question_audio_mean_opinion_score_${item}`}
-                name="question_audio_mean_opinion_score"
-                value={item}
-                checked={
-                  annotation.question_audio_mean_opinion_score ===
-                  item
-                }
-                onChange={() =>
-                  setAnnotation(prev => ({
-                    ...prev,
-                    question_audio_mean_opinion_score: item,
-                  }))
-                }
-                className="checked:bg-yellow-400 checked:ring-yellow-500 focus:ring-yellow-500"
-              />
-              <Label
-                htmlFor={`question_audio_mean_opinion_score_${item}`}
-                className="pl-2"
-              >
-                {item}
-              </Label>
+            <p className="text-slate-600 text-sm font-['Inter'] px-4">
+              Mean Opinion Score
+            </p>
+            <div className="mt-2 flex items-center flex-wrap gap-x-4 gap-y-3 px-4">
+              {RATE_VALUES.map(item => (
+                <div className="flex items-center" key={item}>
+                  <Radio
+                    id={`question_audio_mean_opinion_score_${item}`}
+                    name="question_audio_mean_opinion_score"
+                    value={item}
+                    checked={
+                      annotation.question_audio_mean_opinion_score ===
+                      item
+                    }
+                    onChange={() =>
+                      setAnnotation(prev => ({
+                        ...prev,
+                        question_audio_mean_opinion_score: item,
+                      }))
+                    }
+                    className="checked:bg-yellow-400 checked:ring-yellow-500 focus:ring-yellow-500"
+                  />
+                  <Label
+                    htmlFor={`question_audio_mean_opinion_score_${item}`}
+                    className="pl-2"
+                  >
+                    {item}
+                  </Label>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        )}
 
         {/* Answer */}
         <h1 className="text-slate-600 text-base font-medium font-['Inter'] p-4 mt-2">
@@ -215,7 +219,11 @@ const VoiceAnnotateConversation = ({
           <Button
             type="submit"
             label={data.ratings?.length ? 'Update' : 'Submit'}
-            disabled={loading || Object.keys(annotation).length < 3}
+            disabled={
+              loading ||
+              Object.keys(annotation).length <
+                (data?.audio_question ? 3 : 2)
+            }
             className="uppercase mt-8 w-full disabled:bg-opacity-60 disabled:cursor-not-allowed"
           />
 
