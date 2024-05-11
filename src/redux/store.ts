@@ -18,6 +18,7 @@ import ratingSlice from './features/ratings/rating.slice';
 import questionAnswerSlice from './features/question-answer/question.answer.slice';
 import chatSlice from './features/question-answer/chat.slice';
 import betterResponseSlice from './features/better-response/better-response.slice';
+import profileSlice from './features/profile/profile.slice';
 
 const store = configureStore({
   reducer: {
@@ -27,6 +28,7 @@ const store = configureStore({
     questionAnswer: questionAnswerSlice,
     chat: chatSlice,
     betterResponse: betterResponseSlice,
+    profile: profileSlice,
   },
   middleware(getDefaultMiddleware) {
     return getDefaultMiddleware({
