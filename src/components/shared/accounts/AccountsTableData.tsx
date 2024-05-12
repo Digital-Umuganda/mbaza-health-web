@@ -49,6 +49,9 @@ const AccountsTableData = ({ data }: { data: User[] }) => {
           <td className="px-6 py-4">{item.phone_number || '-'}</td>
           <td className="px-6 py-4">{roleToString(item.role)}</td>
           <td className="px-6 py-4">
+            {item.total_ratings?.toLocaleString() || '-'}
+          </td>
+          <td className="px-6 py-4">
             {item.last_login
               ? moment(item.last_login).fromNow()
               : '-'}

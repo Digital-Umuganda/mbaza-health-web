@@ -22,12 +22,16 @@ import {
   IBetterResponse,
 } from '@/interfaces/better-response';
 import { updateRandomQuestion } from '@/redux/features/question-answer/question.answer.slice';
+import { getProfile } from '@/redux/features/profile/profile.thunk';
 
 const VoiceAnnotateConversation = ({
   data,
 }: {
   data: QuestionType;
 }) => {
+  const { data: profileData } = useAppSelector(
+    state => state.profile,
+  );
   const [openModal, setOpenModal] = useState<BetterResponse>();
   const [translation, setTranslation] = useState<string>('');
 
@@ -43,6 +47,7 @@ const VoiceAnnotateConversation = ({
   const dispatch = useAppDispatch();
   const onRefresh = () => {
     dispatch(getRandomQuestion(null));
+    dispatch(getProfile());
   };
 
   const handleAnnotation = async (
@@ -129,13 +134,26 @@ const VoiceAnnotateConversation = ({
     }
   }, [data]);
 
+  useEffect(() => {
+    dispatch(getProfile());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <>
       <div className="gap-4 flex flex-col md:flex-row w-full md:min-h-[80vh]">
         <div className="relative md:w-[60%] lg:w-[70%] bg-white rounded-2xl border flex flex-col">
-          <h1 className="text-slate-600 text-xl font-medium font-['Inter'] p-4 border-b border-blue-500/20">
-            Annotate this conversation
-          </h1>
+          <div className="flex items-center divide-x-2 p-4 border-b border-blue-500/20 gap-y-3">
+            <h1 className="pr-4 text-slate-600 text-xl font-medium font-['Inter']">
+              Annotate this translation
+            </h1>
+            <p className="pl-4">
+              <span className="text-[#478CCA]">Progress</span>:{' '}
+              {profileData
+                ? profileData.total_ratings?.toLocaleString()
+                : '0'}
+            </p>
+          </div>
           {!data.ratings?.length ? (
             <button
               type="button"
