@@ -27,7 +27,7 @@ const AnnotateConversation = ({ data }: { data: IChat }) => {
   const profile = Secure.getProfile();
   const navigate = useNavigate();
   const [currentLanguage, setCurrentLanguage] = useState<'en' | 'rw'>(
-    'en',
+    'rw',
   );
   const [annotation, setAnnotation] = useState<IAnnotation>({
     comment: '',
@@ -126,6 +126,7 @@ const AnnotateConversation = ({ data }: { data: IChat }) => {
             onChange={event => {
               setCurrentLanguage(event.target.value as 'en' | 'rw');
             }}
+            value={currentLanguage}
           >
             <option value="en">English</option>
             <option value="rw">Kinyarwanda</option>
