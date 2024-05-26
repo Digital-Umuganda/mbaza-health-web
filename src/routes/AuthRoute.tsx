@@ -66,7 +66,7 @@ const AuthRoute = () => {
         {pathname === webAuthPaths.login && (
           <img
             src={logo}
-            alt="RBC-BAZA"
+            alt="RBC-Mbaza"
             className="h-16 mx-auto mt-8 pointer-events-none"
           />
         )}
