@@ -45,6 +45,13 @@ export default function NewAccount() {
       await dispatch(createUser(personalInfo)).unwrap();
       setOpenModal(undefined);
       toast.success('Account created successfully');
+      setPersonalInfo({
+        name: '',
+        address: '',
+        role: '' as Role,
+        email: '',
+        phone_number: '',
+      });
     } catch (error) {
       const err = error as Error;
       toast.error(err.message);
@@ -94,6 +101,7 @@ export default function NewAccount() {
                 name="name"
                 value={personalInfo.name}
                 onChange={onChangePersonalInfo}
+                required
               />
               <SelectInput
                 leftIcon={<HiOutlineLocationMarker size={16} />}
