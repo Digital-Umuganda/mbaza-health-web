@@ -1,8 +1,8 @@
 // import { getRatingTextColor } from '@/helpers/color';
+import appDayjs, { dateFormat } from '@/helpers/date';
 import { roleToPath } from '@/helpers/isAuth';
 import Secure from '@/helpers/secureLS';
 import { RatingResponse } from '@/interfaces/rating.type';
-import moment from 'moment';
 import { HiEye } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 
@@ -20,7 +20,7 @@ const AccountDetailTableData = ({
           className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
         >
           <td className="px-6 py-4">
-            {moment(item.Ratings.created_at).format('LL')}
+            {appDayjs(item.Ratings.created_at).format(dateFormat)}
           </td>
           {!item.title ? (
             <>
