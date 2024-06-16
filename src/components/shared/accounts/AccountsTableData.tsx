@@ -1,9 +1,9 @@
+import appDayjs from '@/helpers/date';
 import { roleToString } from '@/helpers/isAuth';
 import { User, allowedRoles } from '@/interfaces/user.type';
 import { blockUser } from '@/redux/features/users/user.thunk';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { Button, Modal } from 'flowbite-react';
-import moment from 'moment';
 import { useState } from 'react';
 import {
   HiBan,
@@ -53,7 +53,7 @@ const AccountsTableData = ({ data }: { data: User[] }) => {
           </td>
           <td className="px-6 py-4">
             {item.last_login
-              ? moment(item.last_login).fromNow()
+              ? appDayjs(item.last_login).fromNow()
               : '-'}
           </td>
           <td className="px-6 py-4">
