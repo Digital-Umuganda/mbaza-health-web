@@ -131,6 +131,10 @@ const VoiceAnnotateConversation = ({
         response_audio_mean_opinion_score:
           first.response_audio_mean_opinion_score,
       });
+    } else {
+      setAnnotation({
+        comment: '',
+      });
     }
   }, [data]);
 

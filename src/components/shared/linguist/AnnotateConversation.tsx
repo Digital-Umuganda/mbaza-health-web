@@ -132,6 +132,10 @@ const AnnotateConversation = ({ data }: { data: QuestionType }) => {
         response_translation_fluency:
           first.response_translation_fluency,
       });
+    } else {
+      setAnnotation({
+        comment: '',
+      });
     }
   }, [data]);
 

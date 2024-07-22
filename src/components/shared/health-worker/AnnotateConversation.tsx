@@ -83,6 +83,10 @@ const AnnotateConversation = ({ data }: { data: IChat }) => {
         response_correctness: first.response_correctness,
         response_coherence: first.response_coherence,
       });
+    } else {
+      setAnnotation({
+        comment: '',
+      });
     }
   }, [data]);
 
