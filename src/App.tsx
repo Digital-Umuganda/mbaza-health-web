@@ -14,6 +14,7 @@ import { authLoader } from './helpers/isAuth';
 import NotFoundPage from './pages/auth/NotFoundPage';
 import TwoFactorPage from './pages/auth/TwoFactorPage';
 import VerifyAccountPage from './pages/auth/VerifyAccountPage';
+import PrivacyPolicy from './pages/privacy/page';
 
 const router = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
   {
     ...protectedRoutes(),
     loader: () => authLoader(false),
+  },
+  {
+    path: '/privacy',
+    element: <PrivacyPolicy />,
   },
   {
     path: '*',
