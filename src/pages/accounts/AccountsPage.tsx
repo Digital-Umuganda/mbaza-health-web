@@ -107,7 +107,8 @@ const AccountsPage = () => {
                 Role
               </th>
               <th scope="col" className="px-6 py-3">
-                Annotations
+                Annotations /<br />
+                Contributions
               </th>
               <th scope="col" className="px-6 py-3">
                 Last Login

@@ -18,6 +18,7 @@ export interface User {
   created_by: string | null;
   is_blocked: boolean;
   total_ratings?: number;
+  total_questions?: number;
 }
 
 export const allowedRoles: Role[] = [

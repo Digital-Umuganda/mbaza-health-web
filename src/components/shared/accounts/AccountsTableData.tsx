@@ -49,7 +49,19 @@ const AccountsTableData = ({ data }: { data: User[] }) => {
           <td className="px-6 py-4">{item.phone_number || '-'}</td>
           <td className="px-6 py-4">{roleToString(item.role)}</td>
           <td className="px-6 py-4">
-            {item.total_ratings?.toLocaleString() || '-'}
+            {item.role === 'USER' ? (
+              <span title="Asked Questions">
+                {item.total_questions?.toLocaleString() || 0}
+              </span>
+            ) : (
+              <span
+                title={
+                  item.role !== 'ADMIN' ? 'Annotations made' : ''
+                }
+              >
+                {item.total_ratings?.toLocaleString() || '-'}
+              </span>
+            )}
           </td>
           <td className="px-6 py-4">
             {item.last_login
