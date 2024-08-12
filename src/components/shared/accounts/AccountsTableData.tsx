@@ -1,5 +1,6 @@
 import appDayjs from '@/helpers/date';
-import { roleToString } from '@/helpers/isAuth';
+import { roleToPath, roleToString } from '@/helpers/isAuth';
+import Secure from '@/helpers/secureLS';
 import { User, allowedRoles } from '@/interfaces/user.type';
 import { blockUser } from '@/redux/features/users/user.thunk';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
@@ -15,6 +16,7 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const AccountsTableData = ({ data }: { data: User[] }) => {
+  const profile = Secure.getProfile();
   const [confirmBlock, setConfirmBlock] = useState<User | null>(null);
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector(state => state.user);
@@ -72,7 +74,11 @@ const AccountsTableData = ({ data }: { data: User[] }) => {
             <p className="flex space-x-2 justify-end">
               {allowedRoles.includes(item.role) && (
                 <Link
-                  to={`/admin/accounts/${item.id}`}
+                  to={`/admin/accounts/${item.id}${
+                    profile?.role === 'ADMIN'
+                      ? `?role=${roleToPath(item.role)}`
+                      : ''
+                  }`}
                   state={{
                     fullName: item.name,
                   }}

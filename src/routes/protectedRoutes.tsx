@@ -9,6 +9,7 @@ import LinguistRoute from './LinguistRoute';
 import LinguistHomePage from '@/pages/linguist/LinguistHomePage';
 import HealthWorkerHomePage from '@/pages/health-worker/HealthWorkerHomePage';
 import VoiceAnnotatorHomePage from '@/pages/voice-annotator/VoiceAnnotatorHomePage';
+import ViewRatings from '@/pages/admin/ViewRatings';
 
 export const protectedRoutes = (
   role = Secure.getProfile()?.role,
@@ -37,6 +38,10 @@ export const protectedRoutes = (
           {
             path: 'accounts/:id',
             element: <AccountDetailPage />,
+          },
+          {
+            path: ':role/home',
+            element: <ViewRatings />,
           },
         ],
       };

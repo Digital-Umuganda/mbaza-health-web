@@ -102,14 +102,16 @@ const AnnotateConversation = ({ data }: { data: IChat }) => {
           <h1 className="pr-4 text-slate-600 text-xl font-medium font-['Inter']">
             Annotate this conversation
           </h1>
-          <p className="pl-4">
-            <span className="text-[#478CCA]">Progress</span>:{' '}
-            {profileData
-              ? profileData.total_ratings?.toLocaleString()
-              : '0'}
-          </p>
+          {profileData?.role !== 'ADMIN' && (
+            <p className="pl-4">
+              <span className="text-[#478CCA]">Progress</span>:{' '}
+              {profileData
+                ? profileData.total_ratings?.toLocaleString()
+                : '0'}
+            </p>
+          )}
         </div>
-        {!data.ratings?.length ? (
+        {!data.ratings?.length && profileData?.role !== 'ADMIN' ? (
           <button
             type="button"
             disabled={loading}
@@ -195,6 +197,7 @@ const AnnotateConversation = ({ data }: { data: IChat }) => {
                     response_helpfulness: item,
                   }))
                 }
+                disabled={profileData?.role === 'ADMIN'}
                 className="checked:bg-yellow-400 checked:ring-yellow-500 focus:ring-yellow-500"
               />
               <Label
@@ -224,6 +227,7 @@ const AnnotateConversation = ({ data }: { data: IChat }) => {
                     response_correctness: item,
                   }))
                 }
+                disabled={profileData?.role === 'ADMIN'}
                 className="checked:bg-yellow-400 checked:ring-yellow-500 focus:ring-yellow-500"
               />
               <Label
@@ -253,6 +257,7 @@ const AnnotateConversation = ({ data }: { data: IChat }) => {
                     response_coherence: item,
                   }))
                 }
+                disabled={profileData?.role === 'ADMIN'}
                 className="checked:bg-yellow-400 checked:ring-yellow-500 focus:ring-yellow-500"
               />
               <Label
@@ -282,27 +287,32 @@ const AnnotateConversation = ({ data }: { data: IChat }) => {
                 comment: e.target.value,
               }));
             }}
+            readOnly={profileData?.role === 'ADMIN'}
             className="resize-none px-4 py-3 w-full bg-white rounded-lg border outline-none border-blue-500/30 focus:border-blue-500 placeholder:text-slate-600 placeholder:text-sm font-normal font-['Inter']"
             placeholder="Type your comment here..."
           />
 
-          <Button
-            type="submit"
-            label={data.ratings?.length ? 'Update' : 'Submit'}
-            disabled={
-              loading ||
-              !data.question_answers?.length ||
-              Object.keys(annotation).length < 4
-            }
-            className="uppercase mt-8 w-full disabled:bg-opacity-60 disabled:cursor-not-allowed"
-          />
+          {profileData?.role !== 'ADMIN' && (
+            <Button
+              type="submit"
+              label={data.ratings?.length ? 'Update' : 'Submit'}
+              disabled={
+                loading ||
+                !data.question_answers?.length ||
+                Object.keys(annotation).length < 4
+              }
+              className="uppercase mt-8 w-full disabled:bg-opacity-60 disabled:cursor-not-allowed"
+            />
+          )}
 
-          <Link
-            to={`/${roleToPath(profile?.role as string)}/dashboard`}
-            className="block text-center mt-6 text-slate-600 text-sm font-bold font-['Inter'] underline"
-          >
-            Annotation History
-          </Link>
+          {profileData?.role !== 'ADMIN' && (
+            <Link
+              to={`/${roleToPath(profile?.role as string)}/dashboard`}
+              className="block text-center mt-6 text-slate-600 text-sm font-bold font-['Inter'] underline"
+            >
+              Annotation History
+            </Link>
+          )}
         </div>
       </form>
     </div>

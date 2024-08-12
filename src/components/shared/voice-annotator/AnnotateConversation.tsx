@@ -151,17 +151,19 @@ const VoiceAnnotateConversation = ({
             <h1 className="pr-4 text-slate-600 text-xl font-medium font-['Inter']">
               Annotate this translation
             </h1>
-            <p className="pl-4">
-              <span className="text-[#478CCA]">Progress</span>:{' '}
-              {profileData
-                ? profileData.total_ratings?.toLocaleString()
-                : '0'}
-            </p>
+            {profileData?.role !== 'ADMIN' && (
+              <p className="pl-4">
+                <span className="text-[#478CCA]">Progress</span>:{' '}
+                {profileData
+                  ? profileData.total_ratings?.toLocaleString()
+                  : '0'}
+              </p>
+            )}
           </div>
           {!data.ratings?.length ? (
             <button
               type="button"
-              disabled={loading}
+              disabled={loading || profileData?.role === 'ADMIN'}
               onClick={onRefresh}
               className="group disabled:cursor-not-allowed p-2 right-4 top-2 absolute bg-opacity-10 bg-blue-500 rounded-lg border"
             >
@@ -179,7 +181,7 @@ const VoiceAnnotateConversation = ({
               text={data?.kinyarwanda_question}
               audio={data?.audio_question}
               onBetterTranslation={
-                data?.audio_question
+                data?.audio_question && profileData?.role !== 'ADMIN'
                   ? () => {
                       setOpenModal(BetterResponse.BETTER_QUESTION);
                       setTranslation('');
@@ -191,10 +193,14 @@ const VoiceAnnotateConversation = ({
               type="Answer"
               text={data?.kinyarwanda_response}
               audio={data?.audio_responses?.[0]}
-              onBetterTranslation={() => {
-                setOpenModal(BetterResponse.BETTER_ANSWER);
-                setTranslation('');
-              }}
+              onBetterTranslation={
+                profileData?.role === 'ADMIN'
+                  ? undefined
+                  : () => {
+                      setOpenModal(BetterResponse.BETTER_ANSWER);
+                      setTranslation('');
+                    }
+              }
             />
           </div>
         </div>
@@ -228,6 +234,7 @@ const VoiceAnnotateConversation = ({
                           question_audio_mean_opinion_score: item,
                         }))
                       }
+                      disabled={profileData?.role === 'ADMIN'}
                       className="checked:bg-yellow-400 checked:ring-yellow-500 focus:ring-yellow-500"
                     />
                     <Label
@@ -268,6 +275,7 @@ const VoiceAnnotateConversation = ({
                       response_audio_mean_opinion_score: item,
                     }))
                   }
+                  disabled={profileData?.role === 'ADMIN'}
                   className="checked:bg-yellow-400 checked:ring-yellow-500 focus:ring-yellow-500"
                 />
                 <Label
@@ -297,27 +305,34 @@ const VoiceAnnotateConversation = ({
                   comment: e.target.value,
                 }));
               }}
+              readOnly={profileData?.role === 'ADMIN'}
               className="resize-none px-4 py-3 w-full bg-white rounded-lg border outline-none border-blue-500/30 focus:border-blue-500 placeholder:text-slate-600 placeholder:text-sm font-normal font-['Inter']"
               placeholder="Type your comment here..."
             />
 
-            <Button
-              type="submit"
-              label={data.ratings?.length ? 'Update' : 'Submit'}
-              disabled={
-                loading ||
-                Object.keys(annotation).length <
-                  (data?.audio_question ? 3 : 2)
-              }
-              className="uppercase mt-8 w-full disabled:bg-opacity-60 disabled:cursor-not-allowed"
-            />
+            {profileData?.role !== 'ADMIN' && (
+              <Button
+                type="submit"
+                label={data.ratings?.length ? 'Update' : 'Submit'}
+                disabled={
+                  loading ||
+                  Object.keys(annotation).length <
+                    (data?.audio_question ? 3 : 2)
+                }
+                className="uppercase mt-8 w-full disabled:bg-opacity-60 disabled:cursor-not-allowed"
+              />
+            )}
 
-            <Link
-              to={`/${roleToPath(profile?.role as string)}/dashboard`}
-              className="block text-center mt-6 text-slate-600 text-sm font-bold font-['Inter'] underline"
-            >
-              Annotation History
-            </Link>
+            {profileData?.role !== 'ADMIN' && (
+              <Link
+                to={`/${roleToPath(
+                  profile?.role as string,
+                )}/dashboard`}
+                className="block text-center mt-6 text-slate-600 text-sm font-bold font-['Inter'] underline"
+              >
+                Annotation History
+              </Link>
+            )}
           </div>
         </form>
       </div>
@@ -367,6 +382,7 @@ const VoiceAnnotateConversation = ({
                 placeholder="Type your better translation here..."
                 value={translation}
                 onChange={e => setTranslation(e.target.value)}
+                readOnly={profileData?.role === 'ADMIN'}
               />
             </div>
           </div>
@@ -375,7 +391,11 @@ const VoiceAnnotateConversation = ({
           <Button
             type="button"
             label="Submit"
-            disabled={!translation || loadingBetterResponse}
+            disabled={
+              !translation ||
+              loadingBetterResponse ||
+              profileData?.role === 'ADMIN'
+            }
             className="uppercase mt-8 disabled:bg-opacity-60 disabled:cursor-not-allowed"
             onClick={handleBetterResponse}
           />
