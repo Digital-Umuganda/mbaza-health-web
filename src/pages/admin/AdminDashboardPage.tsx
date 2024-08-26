@@ -83,7 +83,7 @@ const AdminDashboardPage = () => {
             <span className="font-medium text-[#3D576F]">
               {' '}
               {(
-                stat.count_annotations_by_linguists /
+                (stat.count_annotations_by_linguists * 100) /
                 stat.count_messages
               ).toFixed(2)}
               %
@@ -112,7 +112,7 @@ const AdminDashboardPage = () => {
             <span className="font-medium text-[#3D576F]">
               {' '}
               {(
-                stat.count_annotations_by_health_workers /
+                (stat.count_annotations_by_health_workers * 100) /
                 stat.count_chats
               ).toFixed(2)}
               %
@@ -142,7 +142,7 @@ const AdminDashboardPage = () => {
             <span className="font-medium text-[#3D576F]">
               {' '}
               {(
-                stat.count_annotations_by_voice_annotators /
+                (stat.count_annotations_by_voice_annotators * 100) /
                 stat.count_messages
               ).toFixed(2)}
               %
