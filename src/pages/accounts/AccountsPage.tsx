@@ -11,9 +11,10 @@ import AccountsTableData from '@/components/shared/accounts/AccountsTableData';
 import AppPagination from '@/components/shared/data/AppPagination';
 import NewAccount from '@/components/shared/accounts/NewAccount';
 import { useSearch } from '@/components/hooks/search';
+import { useSearchParams } from 'react-router-dom';
 
 const AccountsPage = () => {
-  const [role, setRole] = useState<Role>();
+  const [URLSearchParams, SetURLSearchParams] = useSearchParams();
   const [perPage, setPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
   const { debouncedSearch, setSearch } = useSearch();
@@ -30,11 +31,11 @@ const AccountsPage = () => {
         currentPage:
           debouncedSearch.length && data.length < 5 ? 1 : currentPage,
         itemsPerPage: perPage,
-        role,
+        role: URLSearchParams.get('role') as Role,
       }),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, debouncedSearch, perPage, role]);
+  }, [currentPage, debouncedSearch, perPage, URLSearchParams]);
 
   return (
     <>
@@ -66,6 +67,7 @@ const AccountsPage = () => {
             }
             placeholder="Role"
             className="max-w-[320px]"
+            value={URLSearchParams.get('role') || ''}
             options={[
               {
                 value: '',
@@ -82,7 +84,7 @@ const AccountsPage = () => {
             ]}
             onChange={({ target }) => {
               setCurrentPage(1);
-              setRole(target.value as Role);
+              SetURLSearchParams({ role: target.value });
             }}
           />
 

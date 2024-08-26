@@ -1,99 +1,30 @@
-import SelectInput from '@/components/partials/inputs/SelectInput';
 import Http from '@/config/http';
 import { formatNumber } from '@/helpers/function';
-import { chatRatings } from '@/interfaces/rating.type';
-import { IStatRating } from '@/interfaces/stat.type';
-import { Progress } from 'flowbite-react';
 import { useEffect, useState } from 'react';
-import { HiClock, HiHome } from 'react-icons/hi';
+import { HiChevronDoubleRight, HiHome } from 'react-icons/hi';
+import { Link } from 'react-router-dom';
 
 const AdminDashboardPage = () => {
-  const [userStat, setUserStat] = useState({
-    totalUsers: 0,
-    musanze: 0,
-    gicumbi: 0,
-    nyanza: 0,
+  const [stat, setStat] = useState({
+    count_chats: 0,
+    count_messages: 0,
+    count_annotations_by_linguists: 0,
+    count_annotations_by_health_workers: 0,
+    count_annotations_by_voice_annotators: 0,
   });
-  const [time, setTime] = useState<'today' | 'week' | 'month'>(
-    'today',
-  );
-  const [linguistStatRatings, setLinguistStatRatings] = useState<
-    IStatRating[]
-  >([]);
-  const [healthWorkerStatRatings, setHealthWorkerStatRatings] =
-    useState<IStatRating[]>([]);
 
-  const getLinguistStats = async () => {
+  const getStatistics = async () => {
     try {
-      const linguistRequests = chatRatings.map(rating =>
-        new Http().default.get<Omit<IStatRating, 'title'>>(
-          `/user/statistics/ratings?role=LINGUIST&rating=${rating}`,
-        ),
-      );
-      const linguistStats = await Promise.all(linguistRequests);
-      setLinguistStatRatings(
-        chatRatings.map((rating, index) => ({
-          title: rating,
-          ...linguistStats[index].data,
-        })),
-      );
-    } catch (error) {
-      // TODO: Handle error
-    }
-  };
-
-  const getHealthWorkerStats = async () => {
-    try {
-      const healthWorkerRequests = chatRatings.map(rating =>
-        new Http().default.get<Omit<IStatRating, 'title'>>(
-          `/user/statistics/ratings?role=PROFESSIONAL_HEALTH_WORKER&rating=${rating}`,
-        ),
-      );
-      const healthWorkerStats = await Promise.all(
-        healthWorkerRequests,
-      );
-      setHealthWorkerStatRatings(
-        chatRatings.map((rating, index) => ({
-          title: rating,
-          ...healthWorkerStats[index].data,
-        })),
-      );
-    } catch (error) {
-      // TODO: Handle error
-    }
-  };
-
-  const getUsers = async () => {
-    try {
-      const { data } = await new Http().default.get(
-        '/user/statistics/users',
-      );
-      setUserStat(data);
+      const { data } = await new Http().default.get('/stat/count');
+      setStat(data);
     } catch (error) {
       //
     }
   };
 
   useEffect(() => {
-    Promise.all([
-      getLinguistStats(),
-      getHealthWorkerStats(),
-      getUsers(),
-    ]);
+    Promise.all([getStatistics()]);
   }, []);
-
-  const getTotalLinguist = (items: IStatRating[]) => {
-    switch (time) {
-      case 'month':
-        return items.reduce((acc, curr) => acc + curr.month, 0);
-      case 'week':
-        return items.reduce((acc, curr) => acc + curr.week, 0);
-      case 'today':
-        return items.reduce((acc, curr) => acc + curr.today, 0);
-      default:
-        return items.reduce((acc, curr) => acc + curr.month, 0);
-    }
-  };
 
   return (
     <>
@@ -104,159 +35,126 @@ const AdminDashboardPage = () => {
             Dashboard
           </p>
         </div>
-        <div className="flex items-center gap-x-4 gap-y-2 flex-wrap">
-          <SelectInput
-            leftIcon={
-              <HiClock size={16} className="text-amber-400" />
-            }
-            value={time}
-            placeholder="Role"
-            className="max-w-[320px]"
-            options={[
-              {
-                label: 'Today',
-                value: 'today',
-              },
-              {
-                label: 'This Week',
-                value: 'week',
-              },
-              {
-                value: 'month',
-                label: 'This Month',
-              },
-            ]}
-            onChange={({ target }) => {
-              setTime(target.value as 'today' | 'week' | 'month');
-            }}
-          />
-        </div>
       </div>
 
-      <div className="flex overflow-x-auto pb-3 gap-x-4 gap-y-3 scrollbar my-4">
-        <div className="shrink-0 w-96 h-48 bg-white rounded-2xl border flex items-stretch divide-x divide-slate-600/10">
-          <div className="w-1/2 p-4 py-3 flex flex-col justify-center">
-            <p className="text-amber-400 text-5xl font-light font-['Inter']">
-              {formatNumber(getTotalLinguist(linguistStatRatings))}
-            </p>
-            <p className="mt-4 text-slate-600 text-sm font-medium font-['Inter']">
-              Translations Reviewed
-            </p>
-            <p className="mt-1 text-slate-600 text-xs font-medium font-['Inter']">
-              By Linguists
-            </p>
-            <Progress
-              progress={45}
-              className="mt-4 hidden"
-              color="yellow"
-            />
-          </div>
+      <div className="flex flex-wrap gap-x-12 gap-y-6 pb-3 my-4">
+        <div className="border px-8 py-6 flex flex-col justify-center shrink-0 w-80 bg-white rounded-2xl">
+          <h3 className="font-semibold text-[#3D576F]">
+            Questions Asked
+          </h3>
+          <p className="mt-4 text-amber-400 text-5xl font-light font-['Inter']">
+            {formatNumber(stat.count_messages)}
+          </p>
+          <p className="mt-4 text-[#A7B1BB] text-sm">
+            By Community Health Workers
+          </p>
+          <p className="mt-4 text-[#A7B1BB] text-xs">
+            <span className="font-medium text-[#3D576F]">
+              {' '}
+              {formatNumber(stat.count_chats)}
+            </span>{' '}
+            Conversations
+          </p>
+          <p className="my-3 text-[#A7B1BB] text-xs">
+            <span className="font-medium text-[#3D576F]">
+              {' '}
+              {formatNumber(stat.count_messages)}
+            </span>{' '}
+            Answers
+          </p>
 
-          <div className="w-1/2 p-4 py-3 flex flex-col justify-center">
-            {linguistStatRatings.map(stat => (
-              <p
-                key={stat.title}
-                className="text-slate-600 text-opacity-60 text-sm mt-1 font-['Inter']"
-              >
-                <span className="text-slate-600 text-opacity-100 font-semibold">
-                  {Math.floor(
-                    (stat[time] * 100) /
-                      getTotalLinguist(linguistStatRatings) || 0,
-                  )}
-                  %
-                </span>{' '}
-                {stat.title}
-              </p>
-            ))}
-          </div>
+          <Link
+            to={`/admin/accounts?role=USER`}
+            className="flex items-center text-[#478CCA] mt-auto w-fit"
+          >
+            View Details <HiChevronDoubleRight className="ml-2" />
+          </Link>
         </div>
 
-        <div className="shrink-0 w-96 h-48 bg-white rounded-2xl border flex items-stretch divide-x divide-slate-600/10">
-          <div className="w-1/2 p-4 py-3 flex flex-col justify-center">
-            <p className="text-amber-400 text-5xl font-light font-['Inter']">
-              {formatNumber(
-                getTotalLinguist(healthWorkerStatRatings),
-              )}
-            </p>
-            <p className="mt-4 text-slate-600 text-sm font-medium font-['Inter']">
-              Responses Reviewed
-            </p>
-            <p className="mt-1 text-slate-600 text-xs font-medium font-['Inter']">
-              By Professional Health Workers
-            </p>
-            <Progress
-              progress={45}
-              className="mt-4 hidden"
-              color="green"
-            />
-          </div>
-
-          <div className="w-1/2 p-4 py-3 flex flex-col justify-center">
-            {healthWorkerStatRatings.map(stat => (
-              <p
-                key={stat.title}
-                className="text-slate-600 text-opacity-60 text-sm mt-1 font-['Inter']"
-              >
-                <span className="text-slate-600 text-opacity-100 font-semibold">
-                  {Math.floor(
-                    (stat[time] * 100) /
-                      getTotalLinguist(healthWorkerStatRatings) || 0,
-                  )}
-                  %
-                </span>{' '}
-                {stat.title}
-              </p>
-            ))}
-          </div>
+        <div className="border px-8 py-6 flex flex-col justify-center shrink-0 w-96 bg-white rounded-2xl">
+          <h3 className="font-semibold text-[#3D576F]">
+            Translations Annotated
+          </h3>
+          <p className="mt-4 text-amber-400 text-5xl font-light font-['Inter']">
+            {formatNumber(stat.count_annotations_by_linguists)}
+          </p>
+          <p className="mt-4 text-[#A7B1BB] text-sm">By Linguists</p>
+          <p className="my-4 text-[#A7B1BB] text-xs">
+            <span className="font-medium text-[#3D576F]">
+              {' '}
+              {(
+                stat.count_annotations_by_linguists /
+                stat.count_messages
+              ).toFixed(2)}
+              %
+            </span>{' '}
+            of all questions
+          </p>
+          <Link
+            to={`/admin/accounts?role=LINGUIST`}
+            className="flex items-center text-[#478CCA] mt-auto w-fit"
+          >
+            View Details <HiChevronDoubleRight className="ml-2" />
+          </Link>
         </div>
 
-        <div className="shrink-0 w-96 h-48 bg-white rounded-2xl border flex items-stretch divide-x divide-slate-600/10">
-          <div className="w-1/2 p-4 py-3 flex flex-col justify-center">
-            <p className="text-amber-400 text-5xl font-light font-['Inter']">
-              {formatNumber(userStat.totalUsers)}
-            </p>
-            <p className="mt-4 text-slate-600 text-sm font-medium font-['Inter']">
-              Users
-            </p>
-            <p className="mt-1 text-slate-600 text-xs font-medium font-['Inter']">
-              In different locations
-            </p>
-            <Progress
-              progress={45}
-              className="mt-4 hidden"
-              color="green"
-            />
-          </div>
+        <div className="border px-8 py-6 flex flex-col justify-center shrink-0 w-96 bg-white rounded-2xl">
+          <h3 className="font-semibold text-[#3D576F]">
+            Conversations Annotated
+          </h3>
+          <p className="mt-4 text-amber-400 text-5xl font-light font-['Inter']">
+            {formatNumber(stat.count_annotations_by_health_workers)}
+          </p>
+          <p className="mt-4 text-[#A7B1BB] text-sm">
+            By Professional Health Workers
+          </p>
+          <p className="my-4 text-[#A7B1BB] text-xs">
+            <span className="font-medium text-[#3D576F]">
+              {' '}
+              {(
+                stat.count_annotations_by_health_workers /
+                stat.count_chats
+              ).toFixed(2)}
+              %
+            </span>{' '}
+            of all conversations
+          </p>
 
-          <div className="w-1/2 p-4 py-3 flex flex-col justify-center">
-            <p className="text-slate-600 text-opacity-60 text-sm mt-1 font-['Inter']">
-              <span className="text-slate-600 text-opacity-100 font-semibold">
-                {Math.floor(
-                  (userStat.musanze * 100) / userStat.totalUsers || 0,
-                )}
-                %
-              </span>{' '}
-              Musanze
-            </p>
-            <p className="text-slate-600 text-opacity-60 text-sm mt-1 font-['Inter']">
-              <span className="text-slate-600 text-opacity-100 font-semibold">
-                {Math.floor(
-                  (userStat.gicumbi * 100) / userStat.totalUsers || 0,
-                )}
-                %
-              </span>{' '}
-              Gicumbi
-            </p>
-            <p className="text-slate-600 text-opacity-60 text-sm mt-1 font-['Inter']">
-              <span className="text-slate-600 text-opacity-100 font-semibold">
-                {Math.floor(
-                  (userStat.nyanza * 100) / userStat.totalUsers || 0,
-                )}
-                %
-              </span>{' '}
-              Nyanza
-            </p>
-          </div>
+          <Link
+            to={`/admin/accounts?role=PROFESSIONAL_HEALTH_WORKER`}
+            className="flex items-center text-[#478CCA] mt-auto w-fit"
+          >
+            View Details <HiChevronDoubleRight className="ml-2" />
+          </Link>
+        </div>
+
+        <div className="border px-8 py-6 flex flex-col justify-center shrink-0 w-96 bg-white rounded-2xl">
+          <h3 className="font-semibold text-[#3D576F]">
+            Audios Annotated
+          </h3>
+          <p className="mt-4 text-amber-400 text-5xl font-light font-['Inter']">
+            {formatNumber(stat.count_annotations_by_voice_annotators)}
+          </p>
+          <p className="mt-4 text-[#A7B1BB] text-sm">
+            By Voice Annotators
+          </p>
+          <p className="my-4 text-[#A7B1BB] text-xs">
+            <span className="font-medium text-[#3D576F]">
+              {' '}
+              {(
+                stat.count_annotations_by_voice_annotators /
+                stat.count_messages
+              ).toFixed(2)}
+              %
+            </span>{' '}
+            of all answers
+          </p>
+          <Link
+            to={`/admin/accounts?role=VOICE_ANNOTATOR`}
+            className="flex items-center text-[#478CCA] mt-auto w-fit"
+          >
+            View Details <HiChevronDoubleRight className="ml-2" />
+          </Link>
         </div>
       </div>
     </>
